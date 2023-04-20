@@ -99,7 +99,6 @@ public class MainMenu {
         users.addUser("Admin", "Admin");
 
         flights.addFlight("ST-19", "Shiraz", "Tehran", "1402-01-03", "23:20", 950000, 25);
-        flights.addFlight("ST-19", "Shiraz", "Tehran", "1402-01-03", "23:20", 950000, 25);
         flights.addFlight("YT-21", "Yazd", "Tabriz", "1402-01-05", "09:30", 900000, 45);
         flights.addFlight("SK-23", "Shiraz", "Kish", "1402-01-06", "18:45", 985000, 59);
         flights.addFlight("MA-74", "Mashhad", "Ahvaz", "1402-01-07", "11:40", 1200000, 62);

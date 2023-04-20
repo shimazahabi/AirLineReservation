@@ -29,9 +29,9 @@ public class Tickets {
             if (flight.equals(ticket.getFlight())) {
                 ticket.setUpdated(true);
                 ticket.setMessage("* Flight with flight Id : " + flight.getFlightId()
-                        + "From : " + flight.getOrigin()
-                        + "To : " + flight.getDestination()
-                        + "is updated !"
+                        + " From : " + flight.getOrigin()
+                        + " To : " + flight.getDestination()
+                        + " is updated !"
                 );
             }
         });
@@ -42,9 +42,9 @@ public class Tickets {
             if (flight.equals(ticket.getFlight())) {
                 ticket.setRemoved(true);
                 ticket.setMessage("* Flight with flight Id : " + flight.getFlightId()
-                        + "From : " + flight.getOrigin()
-                        + "To : " + flight.getDestination()
-                        + "is removed !"
+                        + " From : " + flight.getOrigin()
+                        + " To : " + flight.getDestination()
+                        + " is removed !"
                 );
             }
         });

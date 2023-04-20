@@ -2,11 +2,9 @@ package datamanager;
 
 import data.Flight;
 import utils.Console;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 
 public class Admin {
     private final Scanner input = new Scanner(System.in);

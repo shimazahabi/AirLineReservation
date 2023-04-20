@@ -212,7 +212,6 @@ public class PassengerMenu {
                     
                 """);
         passenger.printBookedTicket(activeUser);
-        Console.pressKey();
     }
 
     public void addChargeMenu() {

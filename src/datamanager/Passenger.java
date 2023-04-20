@@ -2,6 +2,8 @@ package datamanager;
 
 import data.*;
 import utils.Console;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Passenger {
@@ -219,7 +221,7 @@ public class Passenger {
     public void printTicket(Flight flight, User user, String ticketId) {
         System.out.printf("""
                     +===============================================+
-                    |   * Ticket ID :   %s                   |
+                    |   * Ticket ID :   %s                  |
                     |   ~ Passenger :   %s                       |
                     |                                               |
                     |   - Flight Id :   %s                       |
@@ -283,22 +285,30 @@ public class Passenger {
 
         tickets.getTickets().forEach(ticket -> {
             if (ticket.getPassenger().equals(user)) {
-                System.out.println(ticket);
+                System.out.print(ticket);
             }
         });
         Console.pressKey();
     }
 
     public void showMessages(User user) {
-        tickets.getTickets().forEach(ticket -> {
+        ArrayList<Ticket> removed = new ArrayList<>();
+
+        for (Ticket ticket : tickets.getTickets()) {
             if (ticket.getPassenger().equals(user)) {
                 if (ticket.isRemoved()) {
                     System.out.println(ticket.getMessage());
-                    tickets.removeTicket(ticket);
+                    removed.add(ticket);
                 } else if (ticket.isUpdated()) {
                     System.out.println(ticket.getMessage());
                     ticket.setUpdated(false);
                 }
+            }
+        }
+
+        removed.forEach(ticket -> {
+            if (ticket.isRemoved()) {
+                tickets.removeTicket(ticket);
             }
         });
     }
