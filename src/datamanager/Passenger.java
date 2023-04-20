@@ -2,7 +2,6 @@ package datamanager;
 
 import data.*;
 import utils.Console;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,26 +15,14 @@ public class Passenger {
         this.tickets = tickets;
     }
 
-    public void addingCharge(User user) {
-        int currentCharge = user.getCharge();
-        System.out.printf("$ Current Charge : %,d%n", currentCharge);
-
-        int addedCharge;
-        while (true) {
-            System.out.print("- How much money do you wanna add to your charge? : ");
-            addedCharge = Console.checkInt();
-            if (addedCharge == -1) {
-                System.out.println("* Attention => You can only enter numbers ! *");
-            } else {
-                break;
-            }
-        }
-
-        Console.pauseProgram();
-        user.setCharge(currentCharge + addedCharge);
-        System.out.println(">> Charge successfully added ! <<");
-        System.out.printf("$ Current charge : %,d%n", user.getCharge());
-        Console.pressKey();
+    public void searchFlightTicketsPage() {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                ``````````````````| SEARCH FLIGHT TICKETS |```````````````````
+                
+                """);
+        searchFlightTickets();
     }
 
     public void searchFlightTickets() {
@@ -50,12 +37,12 @@ public class Passenger {
         int option;
         do {
             System.out.printf("""
-                    { 1 } - Flight Id : %s
-                    { 2 } - Origin : %s
-                    { 3 } - Destination : %s
-                    { 4 } - Date : %s
-                    { 5 } - Time : %s
-                    { 6 } - Price Range From : %,d To : %,d%n%n
+                    ( 1 ) - Flight Id : %s
+                    ( 2 ) - Origin : %s
+                    ( 3 ) - Destination : %s
+                    ( 4 ) - Date : %s
+                    ( 5 ) - Time : %s
+                    ( 6 ) - Price Range From : %,d To : %,d%n%n
                     """, flightId, origin, destination, date, time, startPriceRange, endPriceRange);
 
             System.out.print("- Choose A Field As A Filter : ");
@@ -165,6 +152,16 @@ public class Passenger {
         }
     }
 
+    public void bookingTicketPage(User user) {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                ``````````````````````| BOOKING TICKET |``````````````````````
+                
+                """);
+        bookingTicket(user);
+    }
+
     public void bookingTicket(User user) {
         Flight flight = searchFlightId();
 
@@ -235,6 +232,16 @@ public class Passenger {
                 flight.getTime());
     }
 
+    public void ticketCancellationPage(User user) {
+        Console.clear();
+        System.out.print("""
+                    ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                    ```````````````````| Ticket Cancellation |````````````````````
+
+                    """);
+        cancellingTicket(user);
+    }
+
     public void cancellingTicket(User user) {
         System.out.print("~ Ticket ID : ");
         Ticket ticket = searchTicketId();
@@ -275,6 +282,16 @@ public class Passenger {
         flight.setSeats(emptySeats);
     }
 
+    public void bookedTicketsPage(User user) {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                ``````````````````````| Booked Tickets |``````````````````````
+                    
+                """);
+        printBookedTicket(user);
+    }
+
     public void printBookedTicket(User user) {
         showMessages(user);
         System.out.printf("""
@@ -311,5 +328,37 @@ public class Passenger {
                 tickets.removeTicket(ticket);
             }
         });
+    }
+
+    public void addChargePage(User user) {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                ````````````````````````| ADD CHARGE |````````````````````````
+               
+                """);
+        addingCharge(user);
+    }
+
+    public void addingCharge(User user) {
+        int currentCharge = user.getCharge();
+        System.out.printf("$ Current Charge : %,d%n", currentCharge);
+
+        int addedCharge;
+        while (true) {
+            System.out.print("- How much money do you wanna add to your charge? : ");
+            addedCharge = Console.checkInt();
+            if (addedCharge == -1) {
+                System.out.println("* Attention => You can only enter numbers ! *");
+            } else {
+                break;
+            }
+        }
+
+        Console.pauseProgram();
+        user.setCharge(currentCharge + addedCharge);
+        System.out.println(">> Charge successfully added ! <<");
+        System.out.printf("$ Current charge : %,d%n", user.getCharge());
+        Console.pressKey();
     }
 }

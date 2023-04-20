@@ -16,6 +16,16 @@ public class Admin {
         this.tickets = tickets;
     }
 
+    public void addPage() {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                ```````````````````````| ADD FLIGHTS |````````````````````````
+                
+                """);
+        addingFlight();
+    }
+
     public void addingFlight() {
         System.out.print("- Flight Id : ");
         String flightId = flightIdValidation();
@@ -46,9 +56,20 @@ public class Admin {
         System.out.print("- Seats : ");
         int seats = seatsValidation();
 
+        Console.pressKey();
         flights.addFlight(flightId, origin, destination, date, time, price, seats);
         System.out.println("\n>> Flight is successfully added ! <<\n");
         Console.pressKey();
+    }
+
+    public void updatePage() {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                `````````````````````| UPDATE FLIGHTS |```````````````````````
+                
+                """);
+        updatingFlight();
     }
 
     public void updatingFlight() {
@@ -134,7 +155,7 @@ public class Admin {
                 }
             }
         } while (option != 2);
-        System.out.println(">> Flight is successfully updated ! <<");
+        System.out.println(">> Flight is successfully updated ! <<\n");
         Console.pressKey();
     }
 
@@ -159,11 +180,21 @@ public class Admin {
                 flight.getSeats());
     }
 
+    public void removePage() {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                `````````````````````| Remove FLIGHTS |```````````````````````
+                    
+                """);
+        removingFlight();
+    }
+
     public void removingFlight() {
         Flight flight = searchFlightId();
 
         Console.pauseProgram();
-        System.out.println("""
+        System.out.print("""
                 Are you sure that you wanna remove the flight?
                 - Enter 'y' for yes.
                 - Enter 'n' for no.
@@ -176,10 +207,10 @@ public class Admin {
             if (answer.equals("y")) {
                 tickets.removingTicketsMessage(flight);
                 flights.removeFlight(flight);
-                System.out.println(">> Flight is successfully removed ! <<");
+                System.out.println(">> Flight is successfully removed ! <<\n");
                 break;
             } else if (answer.equals("n")) {
-                System.out.println(">> Flight isn't removed ! <<");
+                System.out.println(">> Flight isn't removed ! <<\n");
                 break;
             } else {
                 System.out.println("Invalid Input ! Try Again : ");
@@ -300,6 +331,17 @@ public class Admin {
                 return seats;
             }
         }
+    }
+
+    public void flightSchedulesPage() {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                `````````````````````| FLIGHT SCHEDULES |`````````````````````
+                
+                """);
+        printFlightSchedules();
+        Console.pressKey();
     }
 
     public void printFlightSchedules() {

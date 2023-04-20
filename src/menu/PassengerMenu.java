@@ -4,24 +4,35 @@ import data.User;
 import datamanager.Account;
 import datamanager.Passenger;
 import utils.Console;
+import java.util.Scanner;
 
-public class PassengerMenu {
+public class PassengerMenu extends BaseMenu {
     private final Passenger passenger;
     private final Account account;
     private User activeUser;
 
-    public PassengerMenu(Passenger passenger, Account account) {
+    public PassengerMenu(Passenger passenger, Account account, Scanner input, int RANGE) {
+        super(input, RANGE);
         this.passenger = passenger;
         this.account = account;
     }
 
-    public void passengerMenuOptions(User user) {
+    public void showMenu(User user) {
         activeUser = user;
+        start();
+    }
 
-        int option;
-        do {
-            Console.clear();
-            System.out.print("""
+    public final int CHANGE_PASSWORD = 1;
+    public final int SEARCH = 2;
+    public final int BOOKING = 3;
+    public final int CANCELLATION = 4;
+    public final int BOOKED_TICKETS = 5;
+    public final int ADD_CHARGE = 6;
+
+    @Override
+    public void printMenu() {
+        Console.clear();
+        System.out.print("""
                      ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
                                    ⠀ ⠀⠀⠀⠀⠀⢸⣿⠛⠛⠛⠛⠛⠛⣿⣧⠀⠀⠀⠀⠀⠀
                                    ⠀⠀ ⠀⠀⠀⠀⡘⠛⠀⠀⠀⠀  ⠀⠀⠛⠃⠀⠀⠀⠀⠀⠀
@@ -44,205 +55,35 @@ public class PassengerMenu {
                   { 6 } - Add Charge
                   { 0 } - Sign Out
                     """);
-
-            option = Console.checkInt();
-            switch (option) {
-                case 1:
-                    changePasswordMenu();
-                    break;
-                case 2:
-                    searchFlightTicketsMenu();
-                    break;
-                case 3:
-                    bookingTicketMenu();
-                    break;
-                case 4:
-                    ticketCancellation();
-                    break;
-                case 5:
-                    bookedTickets();
-                    break;
-                case 6:
-                    addChargeMenu();
-                    break;
-                case 0:
-                    break;
-                case -1:
-                    System.out.println("* Attention => You can only enter numbers ! *");
-                    Console.pauseProgram();
-                    break;
-                default:
-                    System.out.println("* Attention => Chosen option is out of range ! *");
-                    Console.pauseProgram();
-                    break;
-            }
-        } while (option != 0);
     }
 
-    public void changePasswordMenu() {
-        int option;
-        do {
-            Console.clear();
-            System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                `````````````````````| CHANGE PASSWORD |``````````````````````
-                
-                { 1 } - Change Password
-                { 0 } - Return
-                
-                """);
+    @Override
+    public int readInput() {
+        int command = Console.checkInt();
 
-            option = Console.checkInt();
-            switch (option) {
-                case 1:
-                    account.changingPassword(activeUser);
-                    break;
-                case 0:
-                    break;
-                case -1:
-                    System.out.println("* Attention => You can only enter numbers ! *");
-                    Console.pauseProgram();
-                    break;
-                default:
-                    System.out.println("* Attention => Chosen option is out of range ! *");
-                    Console.pauseProgram();
-                    break;
-            }
-        } while (option != 0);
+        return switch (command) {
+            case 1 -> CHANGE_PASSWORD;
+            case 2 -> SEARCH;
+            case 3 -> BOOKING;
+            case 4 -> CANCELLATION;
+            case 5 -> BOOKED_TICKETS;
+            case 6 -> ADD_CHARGE;
+            case 0 -> EXIT;
+            case -1 -> ERROR;
+            default -> command;
+        };
     }
 
-    public void searchFlightTicketsMenu() {
-        int option;
-        do {
-            Console.clear();
-            System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ``````````````````| SEARCH FLIGHT TICKETS |```````````````````
-                
-                { 1 } - Search Flight Tickets
-                { 0 } - Return
-                """);
-
-            option = Console.checkInt();
-            switch (option) {
-                case 1:
-                    passenger.searchFlightTickets();
-                    break;
-                case 0:
-                    break;
-                case -1:
-                    System.out.println("* Attention => You can only enter numbers ! *");
-                    Console.pauseProgram();
-                    break;
-                default:
-                    System.out.println("* Attention => Chosen option is out of range ! *");
-                    Console.pauseProgram();
-                    break;
-            }
-        } while (option != 0);
-    }
-
-    public void bookingTicketMenu() {
-        int option;
-        do {
-            Console.clear();
-            System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ``````````````````````| BOOKING TICKET |``````````````````````
-                
-                { 1 } - Book A Ticket
-                { 0 } - Return
-                """);
-
-            option = Console.checkInt();
-            switch (option) {
-                case 1:
-                    passenger.bookingTicket(activeUser);
-                    break;
-                case 0:
-                    break;
-                case -1:
-                    System.out.println("* Attention => You can only enter numbers ! *");
-                    Console.pauseProgram();
-                    break;
-                default:
-                    System.out.println("* Attention => Chosen option is out of range ! *");
-                    Console.pauseProgram();
-                    break;
-            }
-        } while (option != 0);
-    }
-
-    public void ticketCancellation() {
-        int option;
-        do {
-            Console.clear();
-            System.out.print("""
-                    ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                    ```````````````````| Ticket Cancellation |````````````````````
-                                    
-                    { 1 } - Cancel A Ticket
-                    { 0 } - Return
-                    """);
-
-            option = Console.checkInt();
-            switch (option) {
-                case 1:
-                    passenger.cancellingTicket(activeUser);
-                    break;
-                case 0:
-                    break;
-                case -1:
-                    System.out.println("* Attention => You can only enter numbers ! *");
-                    Console.pauseProgram();
-                    break;
-                default:
-                    System.out.println("* Attention => Chosen option is out of range ! *");
-                    Console.pauseProgram();
-                    break;
-            }
-        } while (option != 0);
-    }
-
-    public void bookedTickets() {
-        Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ``````````````````````| Booked Tickets |``````````````````````
-                    
-                """);
-        passenger.printBookedTicket(activeUser);
-    }
-
-    public void addChargeMenu() {
-        int option;
-        do {
-            Console.clear();
-            System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ````````````````````````| ADD CHARGE |````````````````````````
-                    
-                { 1 } - Add Charge
-                { 0 } - Return
-                
-                """);
-
-            option = Console.checkInt();
-            switch (option) {
-                case 1:
-                    passenger.addingCharge(activeUser);
-                    break;
-                case 0:
-                    break;
-                case -1:
-                    System.out.println("* Attention => You can only enter numbers ! *");
-                    Console.pauseProgram();
-                    break;
-                default:
-                    System.out.println("* Attention => Chosen option is out of range ! *");
-                    Console.pauseProgram();
-                    break;
-            }
-        } while (option != 0);
+    @Override
+    public int processCommand(int command) {
+        switch (command) {
+            case CHANGE_PASSWORD-> account.changePasswordPage(activeUser);
+            case SEARCH -> passenger.searchFlightTicketsPage();
+            case BOOKING -> passenger.bookingTicketPage(activeUser);
+            case CANCELLATION -> passenger.ticketCancellationPage(activeUser);
+            case BOOKED_TICKETS -> passenger.bookedTicketsPage(activeUser);
+            case ADD_CHARGE -> passenger.addChargePage(activeUser);
+        }
+        return 0;
     }
 }

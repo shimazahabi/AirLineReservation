@@ -12,6 +12,16 @@ public class Account {
         this.users = users;
     }
 
+    public void changePasswordPage(User user) {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                `````````````````````| CHANGE PASSWORD |``````````````````````
+                
+                """);
+        changingPassword(user);
+    }
+
     public String signUp() {
         System.out.print("""
                 { * Username Requirements :
