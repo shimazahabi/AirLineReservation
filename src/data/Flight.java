@@ -15,9 +15,7 @@ public class Flight {
         this.seats = seats;
     }
 
-    public Flight() {
-
-    }
+    public Flight() { }
 
     public String getFlightId() {
         return flightId;
@@ -33,9 +31,7 @@ public class Flight {
         this.origin = origin;
     }
 
-    public String getDestination() {
-        return destination;
-    }
+    public String getDestination() { return destination; }
 
     public void setDestination(String destination) {
         this.destination = destination;
@@ -73,11 +69,15 @@ public class Flight {
         this.seats = seats;
     }
 
-    public boolean isBooked() {
-        return booked;
-    }
+    public boolean isBooked() { return booked; }
 
-    public void setBooked(boolean booked) {
-        this.booked = booked;
+    public void setBooked(boolean booked) { this.booked = booked; }
+
+    @Override
+    public String toString() {
+        return String.format("""
+                            | %-10s | %-10s | %-13s | %-10s | %-6s | %,-10d | %-6d |
+                            +-------------------------------------------------------------------------------------+
+                            """, flightId, origin, destination, date, time, price, seats);
     }
 }

@@ -1,7 +1,11 @@
 package datamanager;
 
+import data.Flight;
 import utils.Console;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Admin {
@@ -21,38 +25,28 @@ public class Admin {
         System.out.print("- Origin : ");
         String origin = cityValidation();
 
-        System.out.print("- Destination : ");
-        String destination = cityValidation();
+        String destination;
+        do {
+            System.out.print("- Destination : ");
+            destination = cityValidation();
+            if (origin.equals(destination)) {
+                System.out.println("Origin and destination can not be the same city ! Try Again :");
+            } else {
+                break;
+            }
+        } while (true);
 
         System.out.print("- Date : ");
-        String date = input.nextLine();
+        String date = dateValidation();
 
         System.out.print("- Time : ");
-        String time = input.nextLine();
+        String time = timeValidation();
 
-        int price;
-        while (true) {
-            System.out.print("- Price : ");
-            price = Console.checkInt();
+        System.out.print("- Price : ");
+        int price = priceValidation();
 
-            if (price < 0) {
-                System.out.println("Invalid Price Input !");
-            } else {
-                break;
-            }
-        }
-
-        int seats;
-        while (true) {
-            System.out.print("- Seats : ");
-            seats = Console.checkInt();
-
-            if (seats < 0) {
-                System.out.println("Invalid Seat Input !");
-            } else {
-                break;
-            }
-        }
+        System.out.print("- Seats : ");
+        int seats = seatsValidation();
 
         flights.addFlight(flightId, origin, destination, date, time, price, seats);
         System.out.println("\n>> Flight is successfully added ! <<\n");
@@ -60,58 +54,59 @@ public class Admin {
     }
 
     public void updatingFlight() {
-        String flightId = searchFlightId();
+        Flight flight = searchFlightId();
 
         int option;
         do {
-            printFields(flightId);
+            printFields(flight);
             System.out.print("- Choose A Field : ");
             int fieldNum = Console.checkInt();
-            String update;
+            String update1;
+            int update2;
 
             if (fieldNum >= 1 && fieldNum <= 7) {
-                tickets.updateTicketsMessage(flightId);
+                tickets.updateTicketsMessage(flight);
             }
 
             switch (fieldNum) {
                 case 1 -> {
                     System.out.print("- Update Flight Id : ");
-                    update = flightIdValidation();
-                    flights.updateFlight(flightId, 1, update);
+                    update1 = flightIdValidation();
+                    flight.setFlightId(update1);
                 }
                 case 2 -> {
                     System.out.print("- Update Origin : ");
-                    update = cityValidation();
-                    flights.updateFlight(flightId, 2, update);
+                    update1 = cityValidation();
+                    flight.setOrigin(update1);
                 }
                 case 3 -> {
                     System.out.print("- Update Destination : ");
-                    update = cityValidation();
-                    flights.updateFlight(flightId, 3, update);
+                    update1 = cityValidation();
+                    flight.setDestination(update1);
                 }
                 case 4 -> {
                     System.out.print("- Update Date : ");
-                    update = input.nextLine();
-                    flights.updateFlight(flightId, 4, update);
+                    update1 = dateValidation();
+                    flight.setDate(update1);
                 }
                 case 5 -> {
                     System.out.print("- Update Time : ");
-                    update = input.nextLine();
-                    flights.updateFlight(flightId, 5, update);
+                    update1 = timeValidation();
+                    flight.setTime(update1);
                 }
                 case 6 -> {
-                    if (flights.booked(flightId)) {
+                    if (flight.isBooked()) {
                         System.out.println("* You can't change the price, because this flight is booked by passengers !");
                     } else {
                         System.out.print("- Update Price : ");
-                        update = input.nextLine();
-                        flights.updateFlight(flightId, 6, update);
+                        update2 = priceValidation();
+                        flight.setPrice(update2);
                     }
                 }
                 case 7 -> {
                     System.out.print("- Update Seats : ");
-                    update = input.nextLine();
-                    flights.updateFlight(flightId, 7, update);
+                    update2 = seatsValidation();
+                    flight.setSeats(update2);
                 }
                 case -1 -> {
                     System.out.println("* Attention => You can only enter numbers ! *");
@@ -145,58 +140,66 @@ public class Admin {
         Console.pressKey();
     }
 
-    public void printFields(String flightId) {
+    public void printFields(Flight flight) {
         System.out.printf("""
                                         
-                        { 1 } Flight Id : %s
-                        { 2 } Origin : %s
-                        { 3 } Destination : %s
-                        { 4 } Date : %s
-                        { 5 } Time : %s
-                        { 6 } Price : %,d
-                        { 7 } Seats : %d
+                        ( 1 ) Flight Id : %s
+                        ( 2 ) Origin : %s
+                        ( 3 ) Destination : %s
+                        ( 4 ) Date : %s
+                        ( 5 ) Time : %s
+                        ( 6 ) Price : %,d
+                        ( 7 ) Seats : %d
                                         
                         """,
-                flights.flightId(flightId),
-                flights.origin(flightId),
-                flights.destination(flightId),
-                flights.date(flightId),
-                flights.time(flightId),
-                flights.price(flightId),
-                flights.seats(flightId));
+                flight.getFlightId(),
+                flight.getOrigin(),
+                flight.getDestination(),
+                flight.getDate(),
+                flight.getTime(),
+                flight.getPrice(),
+                flight.getSeats());
     }
 
     public void removingFlight() {
-        String flightId = searchFlightId();
+        Flight flight = searchFlightId();
 
         Console.pauseProgram();
         System.out.println("""
                 Are you sure that you wanna remove the flight?
-                - Enter y for yes.
-                - Enter n for no.
+                - Enter 'y' for yes.
+                - Enter 'n' for no.
                 """);
-        String answer = input.nextLine();
-        Console.pauseProgram();
 
-        if (answer.equals("y")) {
-            tickets.removingTicketsMessage(flightId);
-            flights.removeFlight(flightId);
-            System.out.println(">> Flight is Successfully removed ! <<");
-        } else if (answer.equals("n")) {
-            System.out.println(">> Flight isn't removed ! <<");
-        }
+        do {
+            String answer = input.nextLine();
+            Console.pauseProgram();
+
+            if (answer.equals("y")) {
+                tickets.removingTicketsMessage(flight);
+                flights.removeFlight(flight);
+                System.out.println(">> Flight is successfully removed ! <<");
+                break;
+            } else if (answer.equals("n")) {
+                System.out.println(">> Flight isn't removed ! <<");
+                break;
+            } else {
+                System.out.println("Invalid Input ! Try Again : ");
+            }
+        } while (true);
         Console.pressKey();
     }
 
-    public String searchFlightId() {
+    public Flight searchFlightId() {
         while (true) {
             System.out.print("- Flight Id : ");
             String flightId = input.nextLine();
 
-            if (flights.findFlight(flightId) == null) {
+            Flight flight = flights.findFlight(flightId);
+            if (flight == null) {
                 System.out.println("Chosen flight doesn't exist ! Try Again !");
             } else {
-                return flightId;
+                return flight;
             }
         }
     }
@@ -233,6 +236,74 @@ public class Admin {
         }
     }
 
+    public String dateValidation() {
+        while (true) {
+            SimpleDateFormat dateInput = new SimpleDateFormat("yyyy-MM-dd");
+            String strDate = input.nextLine();
+            try
+            {
+                Date date = dateInput.parse(strDate);
+                strDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+                return strDate;
+            }
+            catch (ParseException e)
+            {
+                System.out.println("""
+                        ** Invalid date format !
+                        (Correct Format => yyyy-MM-dd)
+                        (Example => 1402-01-10)
+                        Try Again :\s""");
+            }
+        }
+    }
+
+    public String timeValidation() {
+        while (true) {
+            String time = input.nextLine();
+            if (!time.matches("^[0-9]{2}:[0-9]{2}$")) {
+                System.out.println("""
+                        ** Time format is not acceptable !
+                        (Correct Format => hh:mm)
+                        (Example => 12:30)
+                        Try Again :\s""");
+            } else {
+                return time;
+            }
+        }
+    }
+
+    public int priceValidation() {
+        while (true) {
+            int price = Console.checkInt();
+
+            if (price < 0) {
+                System.out.print("""
+                        Invalid Price Input !
+                        Try Again :\s""");
+            } else {
+                return price;
+            }
+        }
+    }
+
+    public int seatsValidation() {
+        while (true) {
+            int seats = Console.checkInt();
+
+            if (seats < 0) {
+                System.out.print("""
+                        Invalid Seat Input !
+                        Try Again :\s""");
+            } else if (seats > 1000) {
+                System.out.print("""
+                        Airplane doesn't have this capacity !
+                        Try Again :\s""");
+            } else {
+                return seats;
+            }
+        }
+    }
+
     public void printFlightSchedules() {
         System.out.printf("""
                 +=====================================================================================+
@@ -240,6 +311,6 @@ public class Admin {
                 +=====================================================================================+
                 """, "Flight Id", "Origin", "Destination", "Date", "Time", "Price", "Seats");
 
-        flights.showFlights();
+        flights.getFlights().forEach(System.out::print);
     }
 }

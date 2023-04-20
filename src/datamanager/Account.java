@@ -1,9 +1,7 @@
 package datamanager;
 
 import utils.Console;
-
 import data.User;
-
 import java.util.Scanner;
 
 public class Account {
@@ -135,7 +133,7 @@ public class Account {
             System.out.print("{ Password } : ");
             password = input.nextLine();
 
-            if(password.equals(users.password(username))){
+            if(password.equals(users.findUser(username).getPassword())){
                 return;
             } else {
                 System.out.println("* INCORRECT PASSWORD ! Try Again !\n");
@@ -143,15 +141,15 @@ public class Account {
         }
     }
 
-    public void changeingPassword(String username) {
-        System.out.println("~ USER => " + username);
+    public void changingPassword(User user) {
+        System.out.println("~ USER => " + user.getUsername());
 
         String password;
         while (true) {
             System.out.println("- First, Enter Your Current Password : ");
             password = input.nextLine();
 
-            if(password.equals(users.password(username))){
+            if(password.equals(user.getPassword())){
                 break;
             } else {
                 System.out.println("* INCORRECT PASSWORD ! Try Again !\n");
@@ -177,7 +175,7 @@ public class Account {
         }
 
         Console.pauseProgram();
-        users.changePassword(username, password);
+        user.setPassword(password);
         System.out.println("Password successfully changed !");
         Console.pressKey();
     }

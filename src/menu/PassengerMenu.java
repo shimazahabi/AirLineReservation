@@ -1,5 +1,6 @@
 package menu;
 
+import data.User;
 import datamanager.Account;
 import datamanager.Passenger;
 import utils.Console;
@@ -7,15 +8,15 @@ import utils.Console;
 public class PassengerMenu {
     private final Passenger passenger;
     private final Account account;
-    private String activeUser;
+    private User activeUser;
 
     public PassengerMenu(Passenger passenger, Account account) {
         this.passenger = passenger;
         this.account = account;
     }
 
-    public void passengerMenuOptions(String username) {
-        activeUser = username;
+    public void passengerMenuOptions(User user) {
+        activeUser = user;
 
         int option;
         do {
@@ -94,7 +95,7 @@ public class PassengerMenu {
             option = Console.checkInt();
             switch (option) {
                 case 1:
-                    account.changeingPassword(activeUser);
+                    account.changingPassword(activeUser);
                     break;
                 case 0:
                     break;

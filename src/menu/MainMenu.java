@@ -2,7 +2,6 @@ package menu;
 
 import datamanager.*;
 import utils.Console;
-import data.User;
 
 public class MainMenu {
     private final Flights flights = new Flights();
@@ -11,7 +10,7 @@ public class MainMenu {
     private final Account account = new Account(users);
     private final Admin admin = new Admin(flights, tickets);
     private final AdminMenu adminMenu = new AdminMenu(admin);
-    private final Passenger passenger = new Passenger(users, flights, tickets);
+    private final Passenger passenger = new Passenger(flights, tickets);
     private final PassengerMenu passengerMenu = new PassengerMenu(passenger, account);
 
     public void mainMenuOptions() {
@@ -74,7 +73,7 @@ public class MainMenu {
         System.out.printf("{ WELCOME USER => %s }%n", username);
         Console.pressKey();
 
-        passengerMenu.passengerMenuOptions(username);
+        passengerMenu.passengerMenuOptions(users.findUser(username));
     }
 
     public void signInPage() {
@@ -84,7 +83,6 @@ public class MainMenu {
                 `````````````````````````| SIGN In |``````````````````````````
                 
                 """);
-
         String username = account.signIn();
 
         System.out.printf("\n{ WELCOME USER => %s }%n", username);
@@ -93,7 +91,7 @@ public class MainMenu {
         if(username.equals("Admin")){
             adminMenu.adminMenuOptions();
         } else {
-            passengerMenu.passengerMenuOptions(username);
+            passengerMenu.passengerMenuOptions(users.findUser(username));
         }
     }
 

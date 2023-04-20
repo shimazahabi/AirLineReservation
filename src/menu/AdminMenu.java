@@ -1,7 +1,6 @@
 package menu;
 
 import utils.Console;
-
 import datamanager.Admin;
 
 public class AdminMenu {
