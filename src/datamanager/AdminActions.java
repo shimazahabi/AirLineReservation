@@ -1,12 +1,14 @@
 package datamanager;
 
 import data.Flight;
-import utils.AnsiColors;
-import utils.Console;
+import utils.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * This class is for all the actions related to admin.
+ */
 public class AdminActions {
     private final Scanner input;
     private final Flights flights;
@@ -18,6 +20,9 @@ public class AdminActions {
         this.tickets = tickets;
     }
 
+    /**
+     * This method is for the add flights page.
+     */
     public void addFlightPage() {
         Console.clear();
         System.out.print(AnsiColors.ANSI_PURPLE + """
@@ -29,6 +34,9 @@ public class AdminActions {
         addingFlight();
     }
 
+    /**
+     * This method is for adding flights.
+     */
     public void addingFlight() {
         System.out.print("- Flight Id : ");
         String flightId = flightIdValidation();
@@ -65,6 +73,9 @@ public class AdminActions {
         Console.pressKey();
     }
 
+    /**
+     * This method is for update flights page.
+     */
     public void updateFlightPage() {
         Console.clear();
         System.out.print(AnsiColors.ANSI_PURPLE + """
@@ -76,6 +87,9 @@ public class AdminActions {
         updatingFlight();
     }
 
+    /**
+     * This method is for updating flight.
+     */
     public void updatingFlight() {
         Flight flight = searchFlightId();
 
@@ -163,6 +177,10 @@ public class AdminActions {
         Console.pressKey();
     }
 
+    /**
+     * This method prints the flight details and fields in order to be updated.
+     * @param flight chosen flight
+     */
     public void printFields(Flight flight) {
         System.out.printf(AnsiColors.ANSI_PURPLE + """
                                         
@@ -184,6 +202,9 @@ public class AdminActions {
                 flight.getSeats());
     }
 
+    /**
+     * This method is for the remove flights page.
+     */
     public void removeFlightPage() {
         Console.clear();
         System.out.print(AnsiColors.ANSI_PURPLE + """
@@ -195,6 +216,9 @@ public class AdminActions {
         removingFlight();
     }
 
+    /**
+     * This method is for removing flight.
+     */
     public void removingFlight() {
         Flight flight = searchFlightId();
 
@@ -224,6 +248,10 @@ public class AdminActions {
         Console.pressKey();
     }
 
+    /**
+     * This method is for searching flight id.
+     * @return the found flight
+     */
     public Flight searchFlightId() {
         while (true) {
             System.out.print("- Flight Id : ");
@@ -238,6 +266,10 @@ public class AdminActions {
         }
     }
 
+    /**
+     * This method is for the flight id validation.
+     * @return the accepted flight id
+     */
     public String flightIdValidation() {
         while (true) {
             String flightId = input.nextLine();
@@ -257,6 +289,10 @@ public class AdminActions {
         }
     }
 
+    /**
+     * This method is for the city validation.
+     * @return the accepted city
+     */
     public String cityValidation() {
         while (true) {
             String city = input.nextLine();
@@ -270,6 +306,10 @@ public class AdminActions {
         }
     }
 
+    /**
+     * This method is for the date validation.
+     * @return the accepted date
+     */
     public String dateValidation() {
         while (true) {
             SimpleDateFormat dateInput = new SimpleDateFormat("yyyy-MM-dd");
@@ -291,6 +331,10 @@ public class AdminActions {
         }
     }
 
+    /**
+     * This method is for the time validation.
+     * @return the accepted time
+     */
     public String timeValidation() {
         while (true) {
             String time = input.nextLine();
@@ -306,6 +350,10 @@ public class AdminActions {
         }
     }
 
+    /**
+     * This method is for the price validation.
+     * @return the accepted price
+     */
     public int priceValidation() {
         while (true) {
             int price = Console.checkInt();
@@ -320,6 +368,10 @@ public class AdminActions {
         }
     }
 
+    /**
+     * This method is for the seat validation.
+     * @return the accepted seat
+     */
     public int seatsValidation() {
         while (true) {
             int seats = Console.checkInt();
@@ -338,6 +390,9 @@ public class AdminActions {
         }
     }
 
+    /**
+     * This method is for the flight schedules page.
+     */
     public void flightSchedulesPage() {
         Console.clear();
         System.out.print(AnsiColors.ANSI_PURPLE + """
@@ -350,6 +405,9 @@ public class AdminActions {
         Console.pressKey();
     }
 
+    /**
+     * This method is for printing all the flights.
+     */
     public void printFlightSchedules() {
         System.out.printf(AnsiColors.ANSI_CYAN + """
                 +=====================================================================================+

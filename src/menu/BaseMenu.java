@@ -3,6 +3,9 @@ package menu;
 import utils.Console;
 import java.util.Scanner;
 
+/**
+ * BaseMenu is the parent class of menu classes;
+ */
 public abstract class BaseMenu {
     Scanner input;
 

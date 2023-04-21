@@ -3,6 +3,9 @@ package datamanager;
 import data.*;
 import java.util.ArrayList;
 
+/**
+ * This class for saving all the tickets.
+ */
 public class Tickets {
     private final ArrayList<Ticket> tickets = new ArrayList<>();
     private static int idCounter = 1000;
@@ -24,6 +27,9 @@ public class Tickets {
         tickets.remove(ticket);
     }
 
+    /**
+     * This method is for setting the message when updating a flight.
+     */
     public void updateTicketsMessage(Flight flight) {
         tickets.forEach(ticket -> {
             if (flight.equals(ticket.getFlight())) {
@@ -37,6 +43,9 @@ public class Tickets {
         });
     }
 
+    /**
+     * This method is for setting the message when removing a flight.
+     */
     public void removingTicketsMessage(Flight flight) {
         tickets.forEach(ticket -> {
             if (flight.equals(ticket.getFlight())) {
@@ -50,6 +59,10 @@ public class Tickets {
         });
     }
 
+    /**
+     * This method is for finding ticket using the ticket id.
+     * @return the found ticket
+     */
     public Ticket findTicket(String ticketId) {
         for (Ticket ticket : tickets) {
             if (ticketId.equals(ticket.getTicketId())) {

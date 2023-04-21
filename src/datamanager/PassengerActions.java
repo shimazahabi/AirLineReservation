@@ -17,6 +17,9 @@ public class PassengerActions {
         this.tickets = tickets;
     }
 
+    /**
+     * This method is for search flight tickets page.
+     */
     public void searchFlightTicketsPage() {
         Console.clear();
         System.out.print(AnsiColors.ANSI_YELLOW + """
@@ -28,6 +31,9 @@ public class PassengerActions {
         searchFlightTickets();
     }
 
+    /**
+     * This method is for searching flight tickets.
+     */
     public void searchFlightTickets() {
         String flightId = "";
         String origin = "";
@@ -116,6 +122,11 @@ public class PassengerActions {
         Console.pressKey();
     }
 
+    /**
+     * This method sorts two arrays.
+     * @param matchScores the array that saves the matching score of the flights.
+     * @param flightIndex the array that saves the flight indexes.
+     */
     public void sortArrays(int[] matchScores, int[] flightIndex) {
         int size = matchScores.length;
         for (int i = 0; i < size; i++) {
@@ -133,6 +144,11 @@ public class PassengerActions {
         }
     }
 
+    /**
+     * This method prints the searched flights.
+     * @param matchScores the array that saves the matching score of the flights.
+     * @param flightIndex the array that saves the flight indexes.
+     */
     public void printSearchedFlights(int[] matchScores, int[] flightIndex) {
         System.out.printf(AnsiColors.ANSI_CYAN + """
                 +======================================================================================================+
@@ -156,6 +172,9 @@ public class PassengerActions {
         System.out.print(AnsiColors.ANSI_RESET);
     }
 
+    /**
+     * This method is for the booking ticket page.
+     */
     public void bookingTicketPage(Passenger passenger) {
         Console.clear();
         System.out.print(AnsiColors.ANSI_YELLOW + """
@@ -177,6 +196,9 @@ public class PassengerActions {
         bookingTicket(passenger);
     }
 
+    /**
+     * This method is for booking ticket.
+     */
     public void bookingTicket(Passenger passenger) {
         Flight flight = searchFlightId();
 
@@ -196,6 +218,10 @@ public class PassengerActions {
         Console.pressKey();
     }
 
+    /**
+     * This method is for searching the flight id.
+     * @return found flight
+     */
     public Flight searchFlightId() {
         while (true) {
             System.out.print("~ Flight Id : ");
@@ -210,17 +236,28 @@ public class PassengerActions {
         }
     }
 
+    /**
+     * This method checks if the flight has empty seats or not.
+     * @return true if the flight has empty seats.
+     */
     public boolean checkEmptySeats(Flight flight) {
         int emptySeats = flight.getSeats();
         return emptySeats > 0;
     }
 
+    /**
+     * This method check the charge of the user.
+     * @return true if the charge is enough for buying the ticket.
+     */
     public boolean checkCharge(Flight flight, Passenger passenger) {
         int charge = passenger.getCharge();
         int price = flight.getPrice();
         return charge >= price;
     }
 
+    /**
+     * This method updates the details after booking.
+     */
     public void updateDetailsAfterBooking(Flight flight, Passenger passenger) {
         int emptySeats = flight.getSeats() - 1;
         flight.setSeats(emptySeats);
@@ -230,6 +267,9 @@ public class PassengerActions {
         passenger.setCharge(charge - price);
     }
 
+    /**
+     * This method prints the ticket.
+     */
     public void printTicket(Flight flight, Passenger passenger, String ticketId) {
         System.out.printf(AnsiColors.ANSI_BLUE + """
                     +===============================================+
@@ -247,6 +287,9 @@ public class PassengerActions {
                 flight.getTime());
     }
 
+    /**
+     * This method is for ticket cancellation page.
+     */
     public void ticketCancellationPage(Passenger passenger) {
         Console.clear();
         System.out.print(AnsiColors.ANSI_YELLOW + """
@@ -258,6 +301,9 @@ public class PassengerActions {
         cancellingTicket(passenger);
     }
 
+    /**
+     * This method is for cancelling ticket.
+     */
     public void cancellingTicket(Passenger passenger) {
         Ticket ticket = searchTicketId();
 
@@ -271,6 +317,10 @@ public class PassengerActions {
         Console.pressKey();
     }
 
+    /**
+     * This method is for searching the ticket id.
+     * @return the found ticket
+     */
     public Ticket searchTicketId() {
         while (true) {
             System.out.print("~ Ticket Id : ");
@@ -285,18 +335,27 @@ public class PassengerActions {
         }
     }
 
+    /**
+     * This method return charge after cancelling the ticket.
+     */
     public void returnCharge(Passenger passenger, Ticket ticket) {
         int price = ticket.getFlight().getPrice();
         int charge = passenger.getCharge();
         passenger.setCharge(charge + price);
     }
 
+    /**
+     * This method updates seats after cancelling.
+     */
     public void updateSeats(Ticket ticket) {
         Flight flight = ticket.getFlight();
         int emptySeats = flight.getSeats() + 1;
         flight.setSeats(emptySeats);
     }
 
+    /**
+     * This method is for booked tickets page.
+     */
     public void bookedTicketsPage(Passenger passenger) {
         Console.clear();
         System.out.print(AnsiColors.ANSI_YELLOW + """
@@ -308,6 +367,9 @@ public class PassengerActions {
         printBookedTicket(passenger);
     }
 
+    /**
+     * This method prints the booked tickets.
+     */
     public void printBookedTicket(Passenger passenger) {
         showMessages(passenger);
         System.out.printf(AnsiColors.ANSI_CYAN + """
@@ -325,6 +387,9 @@ public class PassengerActions {
         Console.pressKey();
     }
 
+    /**
+     * This method prints the messages of the flights if removed or updated.
+     */
     public void showMessages(Passenger passenger) {
         ArrayList<Ticket> removed = new ArrayList<>();
 
@@ -347,6 +412,9 @@ public class PassengerActions {
         });
     }
 
+    /**
+     * This method is for the add charge page.
+     */
     public void addChargePage(Passenger passenger) {
         Console.clear();
         System.out.print(AnsiColors.ANSI_YELLOW + """
@@ -358,6 +426,9 @@ public class PassengerActions {
         addingCharge(passenger);
     }
 
+    /**
+     * This method is for adding charge.
+     */
     public void addingCharge(Passenger passenger) {
         int currentCharge = passenger.getCharge();
         System.out.printf("$ Current Charge : %,d%n", currentCharge);

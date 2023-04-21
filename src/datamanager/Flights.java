@@ -3,6 +3,9 @@ package datamanager;
 import data.Flight;
 import java.util.ArrayList;
 
+/**
+ * This class is for saving all the flights.
+ */
 public class Flights {
     private final ArrayList<Flight> flights = new ArrayList<>();
 
@@ -16,6 +19,11 @@ public class Flights {
 
     public void removeFlight(Flight flight) { flights.remove(flight); }
 
+    /**
+     * This method is for calculating the matching score of the searched flight.
+     * @param matchScores this array saves the matching score of all the flights.
+     * @param flightIndex this array saves the index of the flights.
+     */
     public void calculateMatchScores(int[] matchScores, int[] flightIndex, String flightId, String origin, String destination, String date, String time, int start, int end) {
         int size = flights.size();
         int matchScore;
@@ -45,6 +53,10 @@ public class Flights {
         }
     }
 
+    /**
+     * This method is for finding the flight by flight id.
+     * @return the found flight
+     */
     public Flight findFlight(String flightId) {
         for (Flight flight : flights) {
             if (flightId.equals(flight.getFlightId())){

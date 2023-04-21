@@ -1,7 +1,11 @@
 package data;
 
+/**
+ * BaseUser is the parent class of user classes.
+ */
 public abstract class BaseUser {
-    private String username, password;
+    private String username;
+    private String password;
 
     public BaseUser(String username, String password) {
         this.username = username;

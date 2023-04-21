@@ -4,6 +4,9 @@ import data.Admin;
 import data.Passenger;
 import java.util.ArrayList;
 
+/**
+ * This class is for saving all the users including admins and passengers.
+ */
 public class Users {
     private final ArrayList<Passenger> passengers = new ArrayList<>();
     private final ArrayList<Admin> admins = new ArrayList<>();
@@ -14,6 +17,10 @@ public class Users {
 
     public void addAdmin(String username, String password) { admins.add(new Admin(username, password)); }
 
+    /**
+     * This method is for finding the passenger.
+     * @return the found passenger
+     */
     public Passenger findPassenger(String username) {
         for (Passenger passenger : passengers) {
             if (username.equals(passenger.getUsername())){
@@ -23,6 +30,10 @@ public class Users {
         return null;
     }
 
+    /**
+     * This method is for finding the admin.
+     * @return the found admin
+     */
     public Admin findAdmin(String username) {
         for (Admin admin : admins) {
             if (username.equals(admin.getUsername())) {

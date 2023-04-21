@@ -5,6 +5,9 @@ import utils.AnsiColors;
 import utils.Console;
 import java.util.Scanner;
 
+/**
+ * This class id for the main manu options.
+ */
 public class MainMenu extends BaseMenu {
     private final DataBase dataBase = new DataBase();
 

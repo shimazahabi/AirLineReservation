@@ -4,6 +4,9 @@ import menu.AdminMenu;
 import menu.PassengerMenu;
 import java.util.Scanner;
 
+/**
+ * This class is for newing all the classes.
+ */
 public class DataBase {
     Scanner input = new Scanner(System.in);
     private final Flights flights = new Flights();

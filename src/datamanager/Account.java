@@ -2,11 +2,12 @@ package datamanager;
 
 import data.Admin;
 import data.Passenger;
-import utils.AnsiColors;
-import utils.Console;
-
+import utils.*;
 import java.util.Scanner;
 
+/**
+ * This class is for all the actions related to account.
+ */
 public class Account {
     private final Scanner input;
     private final Users users;
@@ -16,6 +17,11 @@ public class Account {
         this.users = users;
     }
 
+    /**
+     * This method is for signing up.
+     * @param user an admin or a passenger
+     * @return accepted username
+     */
     public String signUp(String user) {
         System.out.print("""
                 { * Username Requirements :
@@ -49,6 +55,10 @@ public class Account {
         return username;
     }
 
+    /**
+     * This method is for the username validation.
+     * @return accepted username
+     */
     public String usernameValidation() {
         String username;
         while (true) {
@@ -66,6 +76,10 @@ public class Account {
         }
     }
 
+    /**
+     * This method is for the password validation.
+     * @return accepted password
+     */
     public String PasswordValidation() {
         String password;
         String confirmPassword;
@@ -87,6 +101,11 @@ public class Account {
         }
     }
 
+    /**
+     * This method checks if the entered username matches the password requirements.
+     * @param username entered username
+     * @return true if the username is accepted.
+     */
     private boolean usernameRequirements(String username) {
         if (username.contains(" ")) {
             System.err.println("* Unacceptable username : Username should not include spaces !\n");
@@ -101,6 +120,11 @@ public class Account {
         return true;
     }
 
+    /**
+     * This method checks if the entered password matches the password requirements.
+     * @param password entered password
+     * @return true if the password is accepted.
+     */
     private boolean passwordRequirements(String password) {
         if (password.contains(" ")) {
             System.err.println("* Unacceptable password : Password should not include spaces !\n");
@@ -115,10 +139,18 @@ public class Account {
         return true;
     }
 
+    /**
+     * This method is for signing in.
+     * @return the found username
+     */
     public String signIn() {
         return matchUser();
     }
 
+    /**
+     * This method is for matching the user.
+     * @return the found username
+     */
     public String matchUser() {
         String username;
         while (true) {
@@ -139,6 +171,11 @@ public class Account {
         }
     }
 
+    /**
+     * This method is for the matching password.
+     * @param username the found username
+     * @param user an admin or a passenger
+     */
     private void matchPassword(String username, String user) {
         String password;
         while (true) {
@@ -159,6 +196,10 @@ public class Account {
         }
     }
 
+    /**
+     * This method is for the change password page.
+     * @param passenger the user that wants to change their password.
+     */
     public void changePasswordPage(Passenger passenger) {
         Console.clear();
         System.out.print(AnsiColors.ANSI_YELLOW + """
@@ -170,6 +211,10 @@ public class Account {
         changingPassword(passenger);
     }
 
+    /**
+     * This method is for changing the password.
+     * @param passenger the user that wants to change their password.
+     */
     public void changingPassword(Passenger passenger) {
         System.out.println("~ USER => " + passenger.getUsername());
 
@@ -209,6 +254,9 @@ public class Account {
         Console.pressKey();
     }
 
+    /**
+     * This method is for adding admin.
+     */
     public void addAdminPage() {
         Console.clear();
         System.out.print(AnsiColors.ANSI_PURPLE + """

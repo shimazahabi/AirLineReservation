@@ -6,6 +6,9 @@ import utils.Console;
 import datamanager.AdminActions;
 import java.util.Scanner;
 
+/**
+ * This class id for the admin manu options.
+ */
 public class AdminMenu extends BaseMenu {
     private final AdminActions adminActions;
     private final Account account;

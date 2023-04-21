@@ -1,5 +1,8 @@
 package data;
 
+/**
+ * This class is for the passenger's username, password and charge. (Child class of BaseUser)
+ */
 public class Passenger extends BaseUser {
     private int charge;
 

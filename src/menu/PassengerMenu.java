@@ -7,6 +7,9 @@ import utils.AnsiColors;
 import utils.Console;
 import java.util.Scanner;
 
+/**
+ * This class id for the passenger manu options.
+ */
 public class PassengerMenu extends BaseMenu {
     private final PassengerActions passengerActions;
     private final Account account;
