@@ -10,37 +10,21 @@ public class DataBase {
     private final Users users = new Users();
     private final Tickets tickets = new Tickets();
     private final Account account = new Account(users);
-    private final Admin admin = new Admin(flights, tickets);
-    private final AdminMenu adminMenu = new AdminMenu(admin, input, 4);
-    private final Passenger passenger = new Passenger(flights, tickets);
-    private final PassengerMenu passengerMenu = new PassengerMenu(passenger, account, input, 6);
-
-    public Flights getFlights() {
-        return flights;
-    }
+    private final AdminActions adminActions = new AdminActions(flights, tickets);
+    private final AdminMenu adminMenu = new AdminMenu(adminActions, account, input, 5);
+    private final PassengerActions passengerActions = new PassengerActions(flights, tickets);
+    private final PassengerMenu passengerMenu = new PassengerMenu(passengerActions, account, input, 6);
 
     public Users getUsers() {
         return users;
-    }
-
-    public Tickets getTickets() {
-        return tickets;
     }
 
     public Account getAccount() {
         return account;
     }
 
-    public Admin getAdmin() {
-        return admin;
-    }
-
     public AdminMenu getAdminMenu() {
         return adminMenu;
-    }
-
-    public Passenger getPassenger() {
-        return passenger;
     }
 
     public PassengerMenu getPassengerMenu() {
@@ -48,7 +32,7 @@ public class DataBase {
     }
 
     public void preDefined() {
-        users.addUser("Admin", "Admin");
+        users.addAdmin("Admin", "Admin");
 
         flights.addFlight("ST-19", "Shiraz", "Tehran", "1402-01-03", "23:20", 950000, 25);
         flights.addFlight("YT-21", "Yazd", "Tabriz", "1402-01-05", "09:30", 900000, 45);

@@ -2,12 +2,12 @@ package data;
 
 public class Ticket {
     private final Flight flight;
-    private final User passenger;
+    private final Passenger passenger;
     private final String ticketId;
     private String message;
     private boolean removed, updated;
 
-    public Ticket(Flight flight, User passenger, String ticketId) {
+    public Ticket(Flight flight, Passenger passenger, String ticketId) {
         this.flight = flight;
         this.passenger = passenger;
         this.ticketId = ticketId;
@@ -17,7 +17,7 @@ public class Ticket {
         return flight;
     }
 
-    public User getPassenger() { return passenger; }
+    public Passenger getPassenger() { return passenger; }
 
     public String getTicketId() {
         return ticketId;

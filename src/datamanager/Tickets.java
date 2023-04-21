@@ -13,7 +13,7 @@ public class Tickets {
         return tickets;
     }
 
-    public String addTicket(Flight flight, User passenger) {
+    public String addTicket(Flight flight, Passenger passenger) {
         idCounter++;
         String ticketId = String.format("%s-%d", flight.getFlightId(), idCounter);
         tickets.add(new Ticket(flight, passenger, ticketId));

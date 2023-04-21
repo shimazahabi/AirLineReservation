@@ -71,13 +71,13 @@ public class MainMenu extends BaseMenu {
                 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 `````````````````````````| SIGN UP |``````````````````````````
                 """);
-        String username = dataBase.getAccount().signUp();
+        String username = dataBase.getAccount().signUp("passenger");
 
         System.out.println("\nSigning Up successfully completed !");
         System.out.printf("{ WELCOME USER => %s }%n", username);
         Console.pressKey();
 
-        dataBase.getPassengerMenu().showMenu(dataBase.getUsers().findUser(username));
+        dataBase.getPassengerMenu().showMenu(dataBase.getUsers().findPassenger(username));
     }
 
     public void signInPage() {
@@ -92,10 +92,10 @@ public class MainMenu extends BaseMenu {
         System.out.printf("\n{ WELCOME USER => %s }%n", username);
         Console.pressKey();
 
-        if(username.equals("Admin")){
+        if (dataBase.getUsers().findAdmin(username) != null) {
             dataBase.getAdminMenu().showMenu();
-        } else {
-            dataBase.getPassengerMenu().showMenu(dataBase.getUsers().findUser(username));
+        } else if (dataBase.getUsers().findPassenger(username) != null) {
+            dataBase.getPassengerMenu().showMenu(dataBase.getUsers().findPassenger(username));
         }
     }
 }

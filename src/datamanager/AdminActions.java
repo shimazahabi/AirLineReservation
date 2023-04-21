@@ -6,17 +6,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Admin {
+public class AdminActions {
     private final Scanner input = new Scanner(System.in);
     private final Flights flights;
     private final Tickets tickets;
 
-    public Admin(Flights flights, Tickets tickets) {
+    public AdminActions(Flights flights, Tickets tickets) {
         this.flights = flights;
         this.tickets = tickets;
     }
 
-    public void addPage() {
+    public void addFlightPage() {
         Console.clear();
         System.out.print("""
                 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -62,7 +62,7 @@ public class Admin {
         Console.pressKey();
     }
 
-    public void updatePage() {
+    public void updateFlightPage() {
         Console.clear();
         System.out.print("""
                 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -180,7 +180,7 @@ public class Admin {
                 flight.getSeats());
     }
 
-    public void removePage() {
+    public void removeFlightPage() {
         Console.clear();
         System.out.print("""
                 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

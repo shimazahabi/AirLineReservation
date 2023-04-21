@@ -1,24 +1,24 @@
 package menu;
 
-import data.User;
+import data.Passenger;
 import datamanager.Account;
-import datamanager.Passenger;
+import datamanager.PassengerActions;
 import utils.Console;
 import java.util.Scanner;
 
 public class PassengerMenu extends BaseMenu {
-    private final Passenger passenger;
+    private final PassengerActions passengerActions;
     private final Account account;
-    private User activeUser;
+    private Passenger activePassenger;
 
-    public PassengerMenu(Passenger passenger, Account account, Scanner input, int RANGE) {
+    public PassengerMenu(PassengerActions passengerActions, Account account, Scanner input, int RANGE) {
         super(input, RANGE);
-        this.passenger = passenger;
+        this.passengerActions = passengerActions;
         this.account = account;
     }
 
-    public void showMenu(User user) {
-        activeUser = user;
+    public void showMenu(Passenger passenger) {
+        activePassenger = passenger;
         start();
     }
 
@@ -77,12 +77,12 @@ public class PassengerMenu extends BaseMenu {
     @Override
     public int processCommand(int command) {
         switch (command) {
-            case CHANGE_PASSWORD-> account.changePasswordPage(activeUser);
-            case SEARCH -> passenger.searchFlightTicketsPage();
-            case BOOKING -> passenger.bookingTicketPage(activeUser);
-            case CANCELLATION -> passenger.ticketCancellationPage(activeUser);
-            case BOOKED_TICKETS -> passenger.bookedTicketsPage(activeUser);
-            case ADD_CHARGE -> passenger.addChargePage(activeUser);
+            case CHANGE_PASSWORD-> account.changePasswordPage(activePassenger);
+            case SEARCH -> passengerActions.searchFlightTicketsPage();
+            case BOOKING -> passengerActions.bookingTicketPage(activePassenger);
+            case CANCELLATION -> passengerActions.ticketCancellationPage(activePassenger);
+            case BOOKED_TICKETS -> passengerActions.bookedTicketsPage(activePassenger);
+            case ADD_CHARGE -> passengerActions.addChargePage(activePassenger);
         }
         return 0;
     }

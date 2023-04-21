@@ -12,7 +12,7 @@ TAs: [Mohsen Gholami](https://about.me/iMohsen02) - [Pooria Azami](https://githu
 **AIRLINES RESERVATION SYSTEM**
 
 
-This project aims to simulate the online reservation system of airline tickets in a console application (non-graphics). The airline reservations System contains airline schedules, passenger reservations, and ticket records. This system includes two types of users like passengers, and system administrator.
+This project aims to simulate the online reservation system of airline tickets in a console application (non-graphics). The airline reservations System contains airline schedules, passengerActions reservations, and ticket records. This system includes two types of users like passengers, and system administrator.
 
 ```
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -23,10 +23,10 @@ This project aims to simulate the online reservation system of airline tickets i
     <1> Sign in
     <2> Sign up 
 ```
-Use your Account to sign in or create new one. The admin user is pre-defined with a fixed username and password (Admin).
+Use your Account to sign in or create new one. The adminActions passenger is pre-defined with a fixed username and password (Admin).
 
 Admin User:
-After admin login, the guidance commands display:
+After adminActions login, the guidance commands display:
 
 ```
 ::::::::::::::::::::::::::::::::::::::::
@@ -40,7 +40,7 @@ After admin login, the guidance commands display:
     <0> Sign out
 ```
 
-The admin is able to add, update or remove flight details. The flight schedule includes the following:
+The adminActions is able to add, update or remove flight details. The flight schedule includes the following:
 
 ```
 |FlightId   |Origin     |Destination  |Date        |Time       |Price      |Seats |
@@ -56,7 +56,7 @@ The admin is able to add, update or remove flight details. The flight schedule i
 Seat refers to available seats that are reduced by booking a ticket.
 
 Other Users:
-After creating your account as a new passenger, and sign in, the guidance menu options display as follows:
+After creating your account as a new passengerActions, and sign in, the guidance menu options display as follows:
 ```
 ::::::::::::::::::::::::::::::::::::::::
          PASSENGER MENU OPTIONS
@@ -74,7 +74,7 @@ After creating your account as a new passenger, and sign in, the guidance menu o
 - Filter tickets based on flight id, origin, destination, date, time, price range, or some of them in “Search flight tickets” mode.
 - The “Booking ticket” mode is based on flight id. By booking each ticket, a unique code is generated as a ticket id.
 - The “ticket cancellation” process by each ticket id would be confirmed and the refund would be credited back to the account(charge).
-- The “Booked tickets” mode includes all reserved tickets of the user.
+- The “Booked tickets” mode includes all reserved tickets of the passenger.
 - Users have a charging section in their profile where they enter the desired amount.
 (“Add charge”). Every time a ticket is booked, the ticket amount is deducted from this charge.
 

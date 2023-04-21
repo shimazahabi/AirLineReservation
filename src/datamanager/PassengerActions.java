@@ -5,12 +5,12 @@ import utils.Console;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Passenger {
+public class PassengerActions {
     private final Scanner input = new Scanner(System.in);
     private final Flights flights;
     private final Tickets tickets;
 
-    public Passenger(Flights flights, Tickets tickets) {
+    public PassengerActions(Flights flights, Tickets tickets) {
         this.flights = flights;
         this.tickets = tickets;
     }
@@ -152,31 +152,31 @@ public class Passenger {
         }
     }
 
-    public void bookingTicketPage(User user) {
+    public void bookingTicketPage(Passenger passenger) {
         Console.clear();
         System.out.print("""
                 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 ``````````````````````| BOOKING TICKET |``````````````````````
                 
                 """);
-        bookingTicket(user);
+        bookingTicket(passenger);
     }
 
-    public void bookingTicket(User user) {
+    public void bookingTicket(Passenger passenger) {
         Flight flight = searchFlightId();
 
         if (!checkEmptySeats(flight)) {
             System.out.println("* NO AVAILABLE SEATS !");
-        } else if (!checkCharge(flight, user)) {
+        } else if (!checkCharge(flight, passenger)) {
             System.out.println("* YOUR CHARGE IS NOT ENOUGH");
         } else {
-            updateDetailsAfterBooking(flight, user);
+            updateDetailsAfterBooking(flight, passenger);
             Console.pauseProgram();
-            String ticketId = tickets.addTicket(flight, user);
+            String ticketId = tickets.addTicket(flight, passenger);
             flight.setBooked(true);
             System.out.println("Ticket successfully booked !");
 
-            printTicket(flight, user, ticketId);
+            printTicket(flight, passenger, ticketId);
         }
         Console.pressKey();
     }
@@ -200,22 +200,22 @@ public class Passenger {
         return emptySeats > 0;
     }
 
-    public boolean checkCharge(Flight flight, User user) {
-        int charge = user.getCharge();
+    public boolean checkCharge(Flight flight, Passenger passenger) {
+        int charge = passenger.getCharge();
         int price = flight.getPrice();
         return charge >= price;
     }
 
-    public void updateDetailsAfterBooking(Flight flight, User user) {
+    public void updateDetailsAfterBooking(Flight flight, Passenger passenger) {
         int emptySeats = flight.getSeats() - 1;
         flight.setSeats(emptySeats);
 
-        int charge = user.getCharge();
+        int charge = passenger.getCharge();
         int price = flight.getPrice();
-        user.setCharge(charge - price);
+        passenger.setCharge(charge - price);
     }
 
-    public void printTicket(Flight flight, User user, String ticketId) {
+    public void printTicket(Flight flight, Passenger passenger, String ticketId) {
         System.out.printf("""
                     +===============================================+
                     |   * Ticket ID :   %s                  |
@@ -227,27 +227,27 @@ public class Passenger {
                     |                                               |
                     +===============================================+
                     """,
-                ticketId, user.getUsername(), flight.getFlightId(),
+                ticketId, passenger.getUsername(), flight.getFlightId(),
                 flight.getOrigin(), flight.getDestination(), flight.getDate(),
                 flight.getTime());
     }
 
-    public void ticketCancellationPage(User user) {
+    public void ticketCancellationPage(Passenger passenger) {
         Console.clear();
         System.out.print("""
                     ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                     ```````````````````| Ticket Cancellation |````````````````````
 
                     """);
-        cancellingTicket(user);
+        cancellingTicket(passenger);
     }
 
-    public void cancellingTicket(User user) {
+    public void cancellingTicket(Passenger passenger) {
         System.out.print("~ Ticket ID : ");
         Ticket ticket = searchTicketId();
 
         updateSeats(ticket);
-        returnCharge(user, ticket);
+        returnCharge(passenger, ticket);
 
         tickets.removeTicket(ticket);
 
@@ -270,10 +270,10 @@ public class Passenger {
         }
     }
 
-    public void returnCharge(User user, Ticket ticket) {
+    public void returnCharge(Passenger passenger, Ticket ticket) {
         int price = ticket.getFlight().getPrice();
-        int charge = user.getCharge();
-        user.setCharge(charge + price);
+        int charge = passenger.getCharge();
+        passenger.setCharge(charge + price);
     }
 
     public void updateSeats(Ticket ticket) {
@@ -282,18 +282,18 @@ public class Passenger {
         flight.setSeats(emptySeats);
     }
 
-    public void bookedTicketsPage(User user) {
+    public void bookedTicketsPage(Passenger passenger) {
         Console.clear();
         System.out.print("""
                 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 ``````````````````````| Booked Tickets |``````````````````````
                     
                 """);
-        printBookedTicket(user);
+        printBookedTicket(passenger);
     }
 
-    public void printBookedTicket(User user) {
-        showMessages(user);
+    public void printBookedTicket(Passenger passenger) {
+        showMessages(passenger);
         System.out.printf("""
                 +--------------------------------------------------------------------------------------------------+
                 | %-10s | %-10s | %-10s | %-13s | %-10s | %-6s | %-10s | %-6s |
@@ -301,18 +301,18 @@ public class Passenger {
                 """, "Ticket Id", "Flight Id", "Origin", "Destination", "Date", "Time", "Price", "Seats" );
 
         tickets.getTickets().forEach(ticket -> {
-            if (ticket.getPassenger().equals(user)) {
+            if (ticket.getPassenger().equals(passenger)) {
                 System.out.print(ticket);
             }
         });
         Console.pressKey();
     }
 
-    public void showMessages(User user) {
+    public void showMessages(Passenger passenger) {
         ArrayList<Ticket> removed = new ArrayList<>();
 
         for (Ticket ticket : tickets.getTickets()) {
-            if (ticket.getPassenger().equals(user)) {
+            if (ticket.getPassenger().equals(passenger)) {
                 if (ticket.isRemoved()) {
                     System.out.println(ticket.getMessage());
                     removed.add(ticket);
@@ -330,18 +330,18 @@ public class Passenger {
         });
     }
 
-    public void addChargePage(User user) {
+    public void addChargePage(Passenger passenger) {
         Console.clear();
         System.out.print("""
                 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 ````````````````````````| ADD CHARGE |````````````````````````
                
                 """);
-        addingCharge(user);
+        addingCharge(passenger);
     }
 
-    public void addingCharge(User user) {
-        int currentCharge = user.getCharge();
+    public void addingCharge(Passenger passenger) {
+        int currentCharge = passenger.getCharge();
         System.out.printf("$ Current Charge : %,d%n", currentCharge);
 
         int addedCharge;
@@ -356,9 +356,9 @@ public class Passenger {
         }
 
         Console.pauseProgram();
-        user.setCharge(currentCharge + addedCharge);
+        passenger.setCharge(currentCharge + addedCharge);
         System.out.println(">> Charge successfully added ! <<");
-        System.out.printf("$ Current charge : %,d%n", user.getCharge());
+        System.out.printf("$ Current charge : %,d%n", passenger.getCharge());
         Console.pressKey();
     }
 }

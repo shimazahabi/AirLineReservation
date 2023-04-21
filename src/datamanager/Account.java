@@ -1,7 +1,9 @@
 package datamanager;
 
+import data.Admin;
+import data.Passenger;
 import utils.Console;
-import data.User;
+
 import java.util.Scanner;
 
 public class Account {
@@ -12,17 +14,7 @@ public class Account {
         this.users = users;
     }
 
-    public void changePasswordPage(User user) {
-        Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                `````````````````````| CHANGE PASSWORD |``````````````````````
-                
-                """);
-        changingPassword(user);
-    }
-
-    public String signUp() {
+    public String signUp(String user) {
         System.out.print("""
                 { * Username Requirements :
                 - Username should be at least five characters long.
@@ -47,7 +39,11 @@ public class Account {
 
         Console.pauseProgram();
 
-        users.addUser(username, password);
+        if (user.equals("passenger")) {
+            users.addPassenger(username, password);
+        } else if (user.equals("admin")) {
+            users.addAdmin(username, password);
+        }
         return username;
     }
 
@@ -59,7 +55,7 @@ public class Account {
                 username = input.nextLine();
             } while (!usernameRequirements(username));
 
-            if (users.findUser(username) != null) {
+            if (users.findPassenger(username) != null || users.findAdmin(username) != null) {
                 System.out.println("* Username is already taken ! Try another username :)\n");
             } else {
                 System.out.println("~ Username accepted !");
@@ -127,9 +123,13 @@ public class Account {
             System.out.print("{ Username } : ");
             username = input.nextLine();
 
-            User user = users.findUser(username);
-            if (user != null) {
-                matchPassword(username);
+            Passenger passenger = users.findPassenger(username);
+            Admin admin = users.findAdmin(username);
+            if (passenger != null) {
+                matchPassword(username, "passenger");
+                return username;
+            } else if (admin != null) {
+                matchPassword(username, "admin");
                 return username;
             } else {
                 System.out.println("* USERNAME NOT FOUND ! Try Again !\n");
@@ -137,29 +137,45 @@ public class Account {
         }
     }
 
-    private void matchPassword(String username) {
+    private void matchPassword(String username, String user) {
         String password;
         while (true) {
             System.out.print("{ Password } : ");
             password = input.nextLine();
 
-            if(password.equals(users.findUser(username).getPassword())){
-                return;
+            if (user.equals("passenger")) {
+                if (password.equals(users.findPassenger(username).getPassword())) {
+                    return;
+                }
+            } else if (user.equals("admin")) {
+                if (password.equals(users.findAdmin(username).getPassword())) {
+                    return;
+                }
             } else {
                 System.out.println("* INCORRECT PASSWORD ! Try Again !\n");
             }
         }
     }
 
-    public void changingPassword(User user) {
-        System.out.println("~ USER => " + user.getUsername());
+    public void changePasswordPage(Passenger passenger) {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                `````````````````````| CHANGE PASSWORD |``````````````````````
+                
+                """);
+        changingPassword(passenger);
+    }
+
+    public void changingPassword(Passenger passenger) {
+        System.out.println("~ USER => " + passenger.getUsername());
 
         String password;
         while (true) {
             System.out.println("- First, Enter Your Current Password : ");
             password = input.nextLine();
 
-            if(password.equals(user.getPassword())){
+            if(password.equals(passenger.getPassword())){
                 break;
             } else {
                 System.out.println("* INCORRECT PASSWORD ! Try Again !\n");
@@ -185,8 +201,23 @@ public class Account {
         }
 
         Console.pauseProgram();
-        user.setPassword(password);
+        passenger.setPassword(password);
         System.out.println("Password successfully changed !");
+        Console.pressKey();
+    }
+
+    public void addAdminPage() {
+        Console.clear();
+        System.out.print("""
+                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                ````````````````````````| ADD ADMIN |`````````````````````````
+                
+                """);
+        String username = signUp("admin");
+
+        System.out.println("\nAdding Admin successfully completed !");
+        System.out.printf("{ Added Admin => %s }%n", username);
+
         Console.pressKey();
     }
 }

@@ -1,25 +1,29 @@
 package menu;
 
+import datamanager.Account;
 import utils.Console;
-import datamanager.Admin;
+import datamanager.AdminActions;
 import java.util.Scanner;
 
 public class AdminMenu extends BaseMenu {
-    private final Admin admin;
+    private final AdminActions adminActions;
+    private final Account account;
 
-    public AdminMenu(Admin admin, Scanner input, int RANGE) {
+    public AdminMenu(AdminActions adminActions, Account account, Scanner input, int RANGE) {
         super(input, RANGE);
-        this.admin = admin;
+        this.adminActions = adminActions;
+        this.account = account;
     }
 
     public void showMenu() {
         start();
     }
 
-    public final int ADD = 1;
-    public final int UPDATE = 2;
-    public final int REMOVE = 3;
+    public final int ADD_FLIGHT = 1;
+    public final int UPDATE_FLIGHT = 2;
+    public final int REMOVE_FLIGHT = 3;
     public final int FLIGHT_SCHEDULES = 4;
+    public final int ADD_ADMIN = 5;
 
     @Override
     public void printMenu() {
@@ -43,6 +47,7 @@ public class AdminMenu extends BaseMenu {
                      { 2 } - Update Flight
                      { 3 } - Remove Flight
                      { 4 } - Flight Schedules
+                     { 5 } - Add Admin
                      { 0 } - Sign Out
                     """);
     }
@@ -52,10 +57,11 @@ public class AdminMenu extends BaseMenu {
         int command = Console.checkInt();
 
         return switch (command) {
-            case 1 -> ADD;
-            case 2 -> UPDATE;
-            case 3 -> REMOVE;
+            case 1 -> ADD_FLIGHT;
+            case 2 -> UPDATE_FLIGHT;
+            case 3 -> REMOVE_FLIGHT;
             case 4 -> FLIGHT_SCHEDULES;
+            case 5 -> ADD_ADMIN;
             case 0 -> EXIT;
             case -1 -> ERROR;
             default -> command;
@@ -65,10 +71,11 @@ public class AdminMenu extends BaseMenu {
     @Override
     public int processCommand(int command) {
         switch (command) {
-            case ADD -> admin.addPage();
-            case UPDATE -> admin.updatePage();
-            case REMOVE -> admin.removePage();
-            case FLIGHT_SCHEDULES -> admin.flightSchedulesPage();
+            case ADD_FLIGHT -> adminActions.addFlightPage();
+            case UPDATE_FLIGHT -> adminActions.updateFlightPage();
+            case REMOVE_FLIGHT -> adminActions.removeFlightPage();
+            case FLIGHT_SCHEDULES -> adminActions.flightSchedulesPage();
+            case ADD_ADMIN -> account.addAdminPage();
         }
         return 0;
     }
