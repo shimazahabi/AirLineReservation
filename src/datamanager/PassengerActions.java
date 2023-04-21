@@ -1,8 +1,7 @@
 package datamanager;
 
 import data.*;
-import utils.AnsiColors;
-import utils.Console;
+import utils.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -18,7 +17,7 @@ public class PassengerActions {
     }
 
     /**
-     * This method is for search flight tickets page.
+     * This method is for searching flight tickets page.
      */
     public void searchFlightTicketsPage() {
         Console.clear();
@@ -84,7 +83,7 @@ public class PassengerActions {
                     System.out.print("To :");
                     endPriceRange = Console.checkInt();
                 }
-                default -> System.err.println("!! Chosen field is out of range !!");
+                default -> System.out.println(AnsiColors.ANSI_RED + "!! Chosen field is out of range !!" + AnsiColors.ANSI_RESET);
             }
 
             while (true) {
@@ -102,10 +101,10 @@ public class PassengerActions {
                 } else if (option == 1) {
                     break;
                 } else if (option == -1) {
-                    System.err.println("* Attention => You can only enter numbers ! *");
+                    System.out.println(AnsiColors.ANSI_RED + "* Attention => You can only enter numbers ! *" + AnsiColors.ANSI_RESET);
                     Console.pauseProgram();
                 } else {
-                    System.err.println("Chosen Option is out of range !");
+                    System.out.println(AnsiColors.ANSI_RED + "Chosen Option is out of range !" + AnsiColors.ANSI_RESET);
                     Console.pauseProgram();
                 }
             }
@@ -116,14 +115,18 @@ public class PassengerActions {
         int[] flightIndex = new int[size];
 
         flights.calculateMatchScores(matchScores, flightIndex, flightId, origin, destination, date, time, startPriceRange, endPriceRange);
-        sortArrays(matchScores, flightIndex);
 
-        printSearchedFlights(matchScores, flightIndex);
+        if (searchedFlightExist(matchScores)) {
+            sortArrays(matchScores, flightIndex);
+            printSearchedFlights(matchScores, flightIndex);
+        } else {
+            System.out.println(AnsiColors.ANSI_RED + "No flights found !" + AnsiColors.ANSI_RESET);
+        }
         Console.pressKey();
     }
 
     /**
-     * This method sorts two arrays.
+     * This method sorts two arrays simultaneously.
      * @param matchScores the array that saves the matching score of the flights.
      * @param flightIndex the array that saves the flight indexes.
      */
@@ -142,6 +145,20 @@ public class PassengerActions {
                 }
             }
         }
+    }
+
+    /**
+     * This method checks if the searched flight exists or not.
+     * @param matchScores the array that saves the matching score of the flights.
+     * @return true if any flight matches the searched flight.
+     */
+    public boolean searchedFlightExist(int[] matchScores) {
+        for (int matchScore : matchScores) {
+            if (matchScore > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -173,7 +190,8 @@ public class PassengerActions {
     }
 
     /**
-     * This method is for the booking ticket page.
+     * This method is for booking ticket page.
+     * @param passenger active passenger
      */
     public void bookingTicketPage(Passenger passenger) {
         Console.clear();
@@ -198,14 +216,15 @@ public class PassengerActions {
 
     /**
      * This method is for booking ticket.
+     * @param passenger active passenger
      */
     public void bookingTicket(Passenger passenger) {
         Flight flight = searchFlightId();
 
         if (!checkEmptySeats(flight)) {
-            System.err.println("* NO AVAILABLE SEATS !");
+            System.out.println(AnsiColors.ANSI_RED + "* NO AVAILABLE SEATS !" + AnsiColors.ANSI_RESET);
         } else if (!checkCharge(flight, passenger)) {
-            System.err.println("* YOUR CHARGE IS NOT ENOUGH");
+            System.out.println(AnsiColors.ANSI_RED + "* YOUR CHARGE IS NOT ENOUGH" + AnsiColors.ANSI_RESET);
         } else {
             updateDetailsAfterBooking(flight, passenger);
             Console.pauseProgram();
@@ -229,7 +248,7 @@ public class PassengerActions {
 
             Flight flight = flights.findFlight(flightId);
             if (flight == null) {
-                System.err.println("Chosen flight id doesn't exist ! Try Again !");
+                System.out.println(AnsiColors.ANSI_RED + "Chosen flight id doesn't exist ! Try Again !" + AnsiColors.ANSI_RESET);
             } else {
                 return flight;
             }
@@ -237,7 +256,7 @@ public class PassengerActions {
     }
 
     /**
-     * This method checks if the flight has empty seats or not.
+     * This method checks if the chosen flight has any empty seat or not.
      * @return true if the flight has empty seats.
      */
     public boolean checkEmptySeats(Flight flight) {
@@ -246,7 +265,9 @@ public class PassengerActions {
     }
 
     /**
-     * This method check the charge of the user.
+     * This method checks the charge of the user.
+     * @param flight chosen flight
+     * @param passenger active passenger
      * @return true if the charge is enough for buying the ticket.
      */
     public boolean checkCharge(Flight flight, Passenger passenger) {
@@ -256,7 +277,9 @@ public class PassengerActions {
     }
 
     /**
-     * This method updates the details after booking.
+     * This method updates the details after booking. (seats and charge of the user)
+     * @param flight chosen flight
+     * @param passenger active passenger
      */
     public void updateDetailsAfterBooking(Flight flight, Passenger passenger) {
         int emptySeats = flight.getSeats() - 1;
@@ -269,6 +292,9 @@ public class PassengerActions {
 
     /**
      * This method prints the ticket.
+     * @param flight chosen flight
+     * @param passenger active passenger
+     * @param ticketId unique ticket id
      */
     public void printTicket(Flight flight, Passenger passenger, String ticketId) {
         System.out.printf(AnsiColors.ANSI_BLUE + """
@@ -289,6 +315,7 @@ public class PassengerActions {
 
     /**
      * This method is for ticket cancellation page.
+     * @param passenger active passenger
      */
     public void ticketCancellationPage(Passenger passenger) {
         Console.clear();
@@ -303,6 +330,7 @@ public class PassengerActions {
 
     /**
      * This method is for cancelling ticket.
+     * @param passenger active passenger
      */
     public void cancellingTicket(Passenger passenger) {
         Ticket ticket = searchTicketId();
@@ -328,7 +356,7 @@ public class PassengerActions {
 
             Ticket ticket = tickets.findTicket(ticketId);
             if (ticket == null) {
-                System.err.println("Ticket is NOT FOUND ! Try Again !");
+                System.out.println(AnsiColors.ANSI_RED + "Ticket is NOT FOUND ! Try Again !" + AnsiColors.ANSI_RESET);
             } else {
                 return ticket;
             }
@@ -336,7 +364,9 @@ public class PassengerActions {
     }
 
     /**
-     * This method return charge after cancelling the ticket.
+     * This method return charge of the user after cancelling the ticket.
+     * @param passenger active passenger
+     * @param ticket the cancelled ticket
      */
     public void returnCharge(Passenger passenger, Ticket ticket) {
         int price = ticket.getFlight().getPrice();
@@ -346,6 +376,7 @@ public class PassengerActions {
 
     /**
      * This method updates seats after cancelling.
+     * @param ticket cancelled ticket
      */
     public void updateSeats(Ticket ticket) {
         Flight flight = ticket.getFlight();
@@ -355,6 +386,7 @@ public class PassengerActions {
 
     /**
      * This method is for booked tickets page.
+     * @param passenger active passenger
      */
     public void bookedTicketsPage(Passenger passenger) {
         Console.clear();
@@ -364,11 +396,31 @@ public class PassengerActions {
                ``````````````````````````````````````````````````````````````
                     
                 """ + AnsiColors.ANSI_RESET);
-        printBookedTicket(passenger);
+        if (bookedTicketExist(passenger)) {
+            printBookedTicket(passenger);
+        } else {
+            System.out.println(AnsiColors.ANSI_RED + "NO booked tickets found !" + AnsiColors.ANSI_RESET);
+        }
+        Console.pressKey();
+    }
+
+    /**
+     * This method checks if any booked ticket exist.
+     * @param passenger active passenger
+     * @return true if any booked ticket exists.
+     */
+    public boolean bookedTicketExist(Passenger passenger) {
+        for (Ticket ticket : tickets.getTickets()) {
+            if (ticket.getPassenger().equals(passenger)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * This method prints the booked tickets.
+     * @param passenger active passenger
      */
     public void printBookedTicket(Passenger passenger) {
         showMessages(passenger);
@@ -384,11 +436,11 @@ public class PassengerActions {
             }
         });
         System.out.print(AnsiColors.ANSI_RESET);
-        Console.pressKey();
     }
 
     /**
-     * This method prints the messages of the flights if removed or updated.
+     * This method prints the messages of the flights if they are removed or updated.
+     * @param passenger active passenger
      */
     public void showMessages(Passenger passenger) {
         ArrayList<Ticket> removed = new ArrayList<>();
@@ -396,10 +448,10 @@ public class PassengerActions {
         for (Ticket ticket : tickets.getTickets()) {
             if (ticket.getPassenger().equals(passenger)) {
                 if (ticket.isRemoved()) {
-                    System.err.println(ticket.getMessage());
+                    System.out.println(AnsiColors.ANSI_RED + ticket.getMessage() + AnsiColors.ANSI_RESET);
                     removed.add(ticket);
                 } else if (ticket.isUpdated()) {
-                    System.err.println(ticket.getMessage());
+                    System.out.println(AnsiColors.ANSI_RED + ticket.getMessage() + AnsiColors.ANSI_RESET);
                     ticket.setUpdated(false);
                 }
             }
@@ -414,6 +466,7 @@ public class PassengerActions {
 
     /**
      * This method is for the add charge page.
+     * @param passenger active passenger
      */
     public void addChargePage(Passenger passenger) {
         Console.clear();
@@ -428,6 +481,7 @@ public class PassengerActions {
 
     /**
      * This method is for adding charge.
+     * @param passenger active passenger
      */
     public void addingCharge(Passenger passenger) {
         int currentCharge = passenger.getCharge();
@@ -438,7 +492,7 @@ public class PassengerActions {
             System.out.print("- How much money do you wanna add to your charge? : ");
             addedCharge = Console.checkInt();
             if (addedCharge == -1) {
-                System.err.println("* Attention => You can only enter numbers ! *");
+                System.out.println(AnsiColors.ANSI_RED + "* Attention => You can only enter numbers ! *" + AnsiColors.ANSI_RESET);
             } else {
                 break;
             }

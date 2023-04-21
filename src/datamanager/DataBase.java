@@ -34,6 +34,9 @@ public class DataBase {
         return passengerMenu;
     }
 
+    /**
+     * This method predefines some flights and an admin.
+     */
     public void preDefined() {
         users.addAdmin("Admin", "Admin");
 

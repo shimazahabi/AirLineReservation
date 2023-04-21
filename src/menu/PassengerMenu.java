@@ -8,7 +8,7 @@ import utils.Console;
 import java.util.Scanner;
 
 /**
- * This class id for the passenger manu options.
+ * This class is for the passenger manu options. (Child class of BaseMenu)
  */
 public class PassengerMenu extends BaseMenu {
     private final PassengerActions passengerActions;

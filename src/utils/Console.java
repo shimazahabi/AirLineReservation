@@ -2,9 +2,16 @@ package utils;
 
 import java.util.Scanner;
 
+/**
+ * This class holds methods that are used in all classes. (Mostly related to console)
+ */
 public class Console {
     static Scanner input = new Scanner(System.in);
 
+    /**
+     * This method checks whether the input is integer or not.
+     * @return integer or -1 if input is not an integer.
+     */
     public static int checkInt() {
         try
         {
@@ -33,6 +40,10 @@ public class Console {
     }
 
     public static final int SLEEP_TIME = 1000;
+
+    /**
+     * This method pauses the program for 1000 milliseconds.
+     */
     public static void pauseProgram() {
         try {
             Thread.sleep(SLEEP_TIME);

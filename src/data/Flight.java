@@ -1,7 +1,7 @@
 package data;
 
 /**
- * This class is for the flight details. (flightId, origin, destination, date, time, price, seats, booked)
+ * This class is for the flight details. (Including flightId, origin, destination, date, time, price, seats, booked)
  */
 public class Flight {
     private String flightId;

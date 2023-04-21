@@ -18,7 +18,7 @@ public class Account {
     }
 
     /**
-     * This method is for signing up.
+     * This method is for sign-up process.
      * @param user an admin or a passenger
      * @return accepted username
      */
@@ -68,7 +68,7 @@ public class Account {
             } while (!usernameRequirements(username));
 
             if (users.findPassenger(username) != null || users.findAdmin(username) != null) {
-                System.err.println("* Username is already taken ! Try another username :)\n");
+                System.out.println(AnsiColors.ANSI_RED + "* Username is already taken ! Try another username :)\n" + AnsiColors.ANSI_RESET);
             } else {
                 System.out.println(AnsiColors.ANSI_GREEN + "~ Username accepted !" + AnsiColors.ANSI_RESET);
                 return username;
@@ -96,25 +96,25 @@ public class Account {
                 System.out.println(AnsiColors.ANSI_GREEN + "~ Password accepted !" + AnsiColors.ANSI_RESET);
                 return password;
             } else {
-                System.err.println("!! Passwords do NOT match...Try Again :)\n");
+                System.out.println(AnsiColors.ANSI_RED + "!! Passwords do NOT match...Try Again :)\n" + AnsiColors.ANSI_RESET);
             }
         }
     }
 
     /**
-     * This method checks if the entered username matches the password requirements.
-     * @param username entered username
-     * @return true if the username is accepted.
+     * This method checks if the entered username matches the username requirements.
+     * @param username chosen username
+     * @return true if the username is accepted according to username requirements.
      */
     private boolean usernameRequirements(String username) {
         if (username.contains(" ")) {
-            System.err.println("* Unacceptable username : Username should not include spaces !\n");
+            System.out.println(AnsiColors.ANSI_RED + "* Unacceptable username : Username should not include spaces !\n" + AnsiColors.ANSI_RESET);
             return false;
         } else if (!username.matches("^[a-zA-Z]\\w*")) {
-            System.err.println("* Unacceptable username : Username should start with a letter !\n");
+            System.out.println(AnsiColors.ANSI_RED + "* Unacceptable username : Username should start with a letter !\n" + AnsiColors.ANSI_RESET);
             return false;
         } else if (!username.matches("^\\w{5,}$")) {
-            System.err.println("* Unacceptable username : Username should be at least five characters long !\n");
+            System.out.println(AnsiColors.ANSI_RED + "* Unacceptable username : Username should be at least five characters long !\n" + AnsiColors.ANSI_RESET);
             return false;
         }
         return true;
@@ -122,25 +122,25 @@ public class Account {
 
     /**
      * This method checks if the entered password matches the password requirements.
-     * @param password entered password
-     * @return true if the password is accepted.
+     * @param password chosen password
+     * @return true if the password is accepted according to password requirements.
      */
     private boolean passwordRequirements(String password) {
         if (password.contains(" ")) {
-            System.err.println("* Unacceptable password : Password should not include spaces !\n");
+            System.out.println(AnsiColors.ANSI_RED + "* Unacceptable password : Password should not include spaces !\n" + AnsiColors.ANSI_RESET);
             return false;
         } else if (!password.matches("^[A-Za-z0-9_]*$")) {
-            System.err.println("* Unacceptable password : Password can only include letters, numbers and dash !\n");
+            System.out.println(AnsiColors.ANSI_RED + "* Unacceptable password : Password can only include letters, numbers and dash !\n" + AnsiColors.ANSI_RESET);
             return false;
         } else if (!password.matches("^\\w{4,}$")) {
-            System.err.println("* Unacceptable password : Password should be at least four characters long !\n");
+            System.out.println(AnsiColors.ANSI_RED + "* Unacceptable password : Password should be at least four characters long !\n" + AnsiColors.ANSI_RESET);
             return false;
         }
         return true;
     }
 
     /**
-     * This method is for signing in.
+     * This method is for sign-in process.
      * @return the found username
      */
     public String signIn() {
@@ -166,7 +166,7 @@ public class Account {
                 matchPassword(username, "admin");
                 return username;
             } else {
-                System.err.println("* USERNAME NOT FOUND ! Try Again !\n");
+                System.out.println(AnsiColors.ANSI_RED + "* USERNAME NOT FOUND ! Try Again !\n" + AnsiColors.ANSI_RESET);
             }
         }
     }
@@ -185,19 +185,21 @@ public class Account {
             if (user.equals("passenger")) {
                 if (password.equals(users.findPassenger(username).getPassword())) {
                     return;
+                } else {
+                    System.out.println(AnsiColors.ANSI_RED + "* INCORRECT PASSWORD ! Try Again !\n" + AnsiColors.ANSI_RESET);
                 }
             } else if (user.equals("admin")) {
                 if (password.equals(users.findAdmin(username).getPassword())) {
                     return;
+                } else {
+                    System.out.println(AnsiColors.ANSI_RED + "* INCORRECT PASSWORD ! Try Again !\n" + AnsiColors.ANSI_RESET);
                 }
-            } else {
-                System.err.println("* INCORRECT PASSWORD ! Try Again !\n");
             }
         }
     }
 
     /**
-     * This method is for the change password page.
+     * This method is for changing password page.
      * @param passenger the user that wants to change their password.
      */
     public void changePasswordPage(Passenger passenger) {
@@ -226,7 +228,7 @@ public class Account {
             if(password.equals(passenger.getPassword())){
                 break;
             } else {
-                System.err.println("* INCORRECT PASSWORD ! Try Again !\n");
+                System.out.println(AnsiColors.ANSI_RED + "* INCORRECT PASSWORD ! Try Again !\n" + AnsiColors.ANSI_RESET);
             }
         }
 
@@ -244,7 +246,7 @@ public class Account {
                 System.out.println("~ Password accepted !");
                 break;
             } else {
-                System.err.println("!! Passwords do NOT match...Try Again :)\n");
+                System.out.println(AnsiColors.ANSI_RED + "!! Passwords do NOT match...Try Again :)\n" + AnsiColors.ANSI_RESET);
             }
         }
 

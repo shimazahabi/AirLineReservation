@@ -1,7 +1,7 @@
 package data;
 
 /**
- * This class is for the ticket details. (flight, passenger, ticketId, message, removed, updated)
+ * This class is for the ticket details. (Including flight, passenger, ticketId, message, removed, updated)
  */
 public class Ticket {
     private final Flight flight;

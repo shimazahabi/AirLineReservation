@@ -6,7 +6,7 @@ import utils.Console;
 import java.util.Scanner;
 
 /**
- * This class id for the main manu options.
+ * This class is for the main manu options. (Child class of BaseMenu)
  */
 public class MainMenu extends BaseMenu {
     private final DataBase dataBase = new DataBase();
@@ -81,6 +81,9 @@ public class MainMenu extends BaseMenu {
         return 0;
     }
 
+    /**
+     * This method is for the sign-up page and going to the passenger menu.
+     */
     public void signUpPage() {
         Console.clear();
         System.out.print(AnsiColors.ANSI_CYAN + """
@@ -97,6 +100,9 @@ public class MainMenu extends BaseMenu {
         dataBase.getPassengerMenu().showMenu(dataBase.getUsers().findPassenger(username));
     }
 
+    /**
+     * This method is for the sing-in page and going to the admin-passenger menu.
+     */
     public void signInPage() {
         Console.clear();
         System.out.print(AnsiColors.ANSI_CYAN + """

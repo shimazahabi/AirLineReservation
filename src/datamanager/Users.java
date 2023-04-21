@@ -18,7 +18,7 @@ public class Users {
     public void addAdmin(String username, String password) { admins.add(new Admin(username, password)); }
 
     /**
-     * This method is for finding the passenger.
+     * This method is for finding the passenger using the username.
      * @return the found passenger
      */
     public Passenger findPassenger(String username) {
@@ -31,7 +31,7 @@ public class Users {
     }
 
     /**
-     * This method is for finding the admin.
+     * This method is for finding the admin using the username.
      * @return the found admin
      */
     public Admin findAdmin(String username) {

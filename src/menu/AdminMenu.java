@@ -7,7 +7,7 @@ import datamanager.AdminActions;
 import java.util.Scanner;
 
 /**
- * This class id for the admin manu options.
+ * This class is for the admin manu options. (Child class of BaseMenu)
  */
 public class AdminMenu extends BaseMenu {
     private final AdminActions adminActions;

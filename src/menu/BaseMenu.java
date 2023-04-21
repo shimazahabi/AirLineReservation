@@ -1,6 +1,6 @@
 package menu;
 
-import utils.Console;
+import utils.*;
 import java.util.Scanner;
 
 /**
@@ -23,14 +23,14 @@ public abstract class BaseMenu {
     public abstract int readInput();
 
     public void printErrorMessage() {
-        System.err.println("* Attention => You can only enter numbers ! *");
+        System.out.println(AnsiColors.ANSI_RED + "* Attention => You can only enter numbers ! *" + AnsiColors.ANSI_RESET);
         Console.pauseProgram();
-    };
+    }
 
     public void printOutOfRangeMessage() {
-        System.err.println("* Attention => Chosen option is out of range ! *");
+        System.out.println(AnsiColors.ANSI_RED + "* Attention => Chosen option is out of range ! *" + AnsiColors.ANSI_RESET);
         Console.pauseProgram();
-    };
+    }
 
     public abstract int processCommand(int command);
 
@@ -42,7 +42,7 @@ public abstract class BaseMenu {
             command = readInput();
             if (command == ERROR) {
                 printErrorMessage();
-            } else if (command < 0 && command > RANGE) {
+            } else if (command < 0 || command > RANGE) {
                 printOutOfRangeMessage();
             } else {
                 return command;

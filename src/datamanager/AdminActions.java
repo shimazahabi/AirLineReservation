@@ -21,7 +21,7 @@ public class AdminActions {
     }
 
     /**
-     * This method is for the add flights page.
+     * This method is for adding flights page.
      */
     public void addFlightPage() {
         Console.clear();
@@ -49,7 +49,7 @@ public class AdminActions {
             System.out.print("- Destination : ");
             destination = cityValidation();
             if (origin.equals(destination)) {
-                System.err.println("Origin and destination can not be the same city ! Try Again :");
+                System.out.println(AnsiColors.ANSI_RED + "Origin and destination can not be the same city ! Try Again :" + AnsiColors.ANSI_RESET);
             } else {
                 break;
             }
@@ -74,7 +74,7 @@ public class AdminActions {
     }
 
     /**
-     * This method is for update flights page.
+     * This method is for updating flights page.
      */
     public void updateFlightPage() {
         Console.clear();
@@ -88,7 +88,7 @@ public class AdminActions {
     }
 
     /**
-     * This method is for updating flight.
+     * This method is for updating flights.
      */
     public void updatingFlight() {
         Flight flight = searchFlightId();
@@ -133,7 +133,7 @@ public class AdminActions {
                 }
                 case 6 -> {
                     if (flight.isBooked()) {
-                        System.err.println("* You can't change the price, because this flight is booked by passengers !");
+                        System.out.println(AnsiColors.ANSI_RED + "* You can't change the price, because this flight is booked by passengers !" + AnsiColors.ANSI_RESET);
                     } else {
                         System.out.print("- Update Price : ");
                         update2 = priceValidation();
@@ -146,11 +146,11 @@ public class AdminActions {
                     flight.setSeats(update2);
                 }
                 case -1 -> {
-                    System.err.println("* Attention => You can only enter numbers ! *");
+                    System.out.println(AnsiColors.ANSI_RED + "* Attention => You can only enter numbers ! *" + AnsiColors.ANSI_RESET);
                     Console.pauseProgram();
                 }
                 default -> {
-                    System.err.println("Chosen field is out of range !");
+                    System.out.println(AnsiColors.ANSI_RED + "Chosen field is out of range !" + AnsiColors.ANSI_RESET);
                     Console.pauseProgram();
                 }
             }
@@ -165,10 +165,10 @@ public class AdminActions {
                 if (option == 2 || option == 1) {
                     break;
                 } else if (option == -1) {
-                    System.err.println("* Attention => You can only enter numbers ! *");
+                    System.out.println(AnsiColors.ANSI_RED + "* Attention => You can only enter numbers ! *" + AnsiColors.ANSI_RESET);
                     Console.pauseProgram();
                 } else {
-                    System.err.println("Chosen Option is out of range !");
+                    System.out.println(AnsiColors.ANSI_RED + "Chosen Option is out of range !" + AnsiColors.ANSI_RESET);
                     Console.pauseProgram();
                 }
             }
@@ -203,7 +203,7 @@ public class AdminActions {
     }
 
     /**
-     * This method is for the remove flights page.
+     * This method is for removing flights page.
      */
     public void removeFlightPage() {
         Console.clear();
@@ -217,7 +217,7 @@ public class AdminActions {
     }
 
     /**
-     * This method is for removing flight.
+     * This method is for removing flights.
      */
     public void removingFlight() {
         Flight flight = searchFlightId();
@@ -242,7 +242,7 @@ public class AdminActions {
                 System.out.println(AnsiColors.ANSI_GREEN + ">> Flight isn't removed ! <<\n" + AnsiColors.ANSI_RESET);
                 break;
             } else {
-                System.err.println("Invalid Input ! Try Again : ");
+                System.out.println(AnsiColors.ANSI_RED + "Invalid Input ! Try Again : " + AnsiColors.ANSI_RESET);
             }
         } while (true);
         Console.pressKey();
@@ -259,7 +259,7 @@ public class AdminActions {
 
             Flight flight = flights.findFlight(flightId);
             if (flight == null) {
-                System.err.println("Chosen flight doesn't exist ! Try Again !");
+                System.out.println(AnsiColors.ANSI_RED + "Chosen flight doesn't exist ! Try Again !" + AnsiColors.ANSI_RESET);
             } else {
                 return flight;
             }
@@ -274,15 +274,15 @@ public class AdminActions {
         while (true) {
             String flightId = input.nextLine();
             if (!flightId.matches("^[a-zA-z]{2}-[0-9]{2}$")) {
-                System.err.println("""
+                System.out.println(AnsiColors.ANSI_RED + """
                         ** Flight Id is not acceptable !
                         (Correct Format => [a-zA-Z]*2 - [0-9]*2)
                         (Example => SA-18)
-                        Try Again :\s""");
+                        Try Again :\s""" + AnsiColors.ANSI_RESET);
             } else if (flights.findFlight(flightId) != null) {
-                System.err.println("""
+                System.out.println(AnsiColors.ANSI_RED + """
                         ** Flight Id already exists !
-                        Try Again :\s""");
+                        Try Again :\s""" + AnsiColors.ANSI_RESET);
             } else {
                 return flightId;
             }
@@ -290,8 +290,8 @@ public class AdminActions {
     }
 
     /**
-     * This method is for the city validation.
-     * @return the accepted city
+     * This method is for the city name validation.
+     * @return the accepted city name
      */
     public String cityValidation() {
         while (true) {
@@ -299,9 +299,9 @@ public class AdminActions {
             if (city.matches("[a-zA-Z]+$")){
                 return city.substring(0, 1).toUpperCase() + city.substring(1);
             } else {
-                System.err.println("""
+                System.out.println(AnsiColors.ANSI_RED + """
                         ** City name should not include numbers !
-                        Try Again :\s""");
+                        Try Again :\s""" + AnsiColors.ANSI_RESET);
             }
         }
     }
@@ -322,11 +322,11 @@ public class AdminActions {
             }
             catch (ParseException e)
             {
-                System.err.println("""
+                System.out.println(AnsiColors.ANSI_RED + """
                         ** Invalid date format !
                         (Correct Format => yyyy-MM-dd)
                         (Example => 1402-01-10)
-                        Try Again :\s""");
+                        Try Again :\s""" + AnsiColors.ANSI_RESET);
             }
         }
     }
@@ -339,11 +339,11 @@ public class AdminActions {
         while (true) {
             String time = input.nextLine();
             if (!time.matches("^[0-9]{2}:[0-9]{2}$")) {
-                System.err.println("""
+                System.out.println(AnsiColors.ANSI_RED + """
                         ** Time format is not acceptable !
                         (Correct Format => hh:mm)
                         (Example => 12:30)
-                        Try Again :\s""");
+                        Try Again :\s""" + AnsiColors.ANSI_RESET);
             } else {
                 return time;
             }
@@ -359,9 +359,9 @@ public class AdminActions {
             int price = Console.checkInt();
 
             if (price < 0) {
-                System.err.print("""
+                System.out.print(AnsiColors.ANSI_RED + """
                         Invalid Price Input !
-                        Try Again :\s""");
+                        Try Again :\s""" + AnsiColors.ANSI_RESET);
             } else {
                 return price;
             }
@@ -377,13 +377,13 @@ public class AdminActions {
             int seats = Console.checkInt();
 
             if (seats < 0) {
-                System.err.print("""
+                System.out.print(AnsiColors.ANSI_RED + """
                         Invalid Seat Input !
-                        Try Again :\s""");
+                        Try Again :\s""" + AnsiColors.ANSI_RESET);
             } else if (seats > 1000) {
-                System.err.print("""
+                System.out.print(AnsiColors.ANSI_RED + """
                         Airplane doesn't have this capacity !
-                        Try Again :\s""");
+                        Try Again :\s""" + AnsiColors.ANSI_RESET);
             } else {
                 return seats;
             }
