@@ -9,10 +9,10 @@ public class DataBase {
     private final Flights flights = new Flights();
     private final Users users = new Users();
     private final Tickets tickets = new Tickets();
-    private final Account account = new Account(users);
-    private final AdminActions adminActions = new AdminActions(flights, tickets);
+    private final Account account = new Account(input, users);
+    private final AdminActions adminActions = new AdminActions(input, flights, tickets);
     private final AdminMenu adminMenu = new AdminMenu(adminActions, account, input, 5);
-    private final PassengerActions passengerActions = new PassengerActions(flights, tickets);
+    private final PassengerActions passengerActions = new PassengerActions(input, flights, tickets);
     private final PassengerMenu passengerMenu = new PassengerMenu(passengerActions, account, input, 6);
 
     public Users getUsers() {

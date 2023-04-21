@@ -1,27 +1,30 @@
 package datamanager;
 
 import data.*;
+import utils.AnsiColors;
 import utils.Console;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PassengerActions {
-    private final Scanner input = new Scanner(System.in);
+    private final Scanner input;
     private final Flights flights;
     private final Tickets tickets;
 
-    public PassengerActions(Flights flights, Tickets tickets) {
+    public PassengerActions(Scanner input, Flights flights, Tickets tickets) {
+        this.input = input;
         this.flights = flights;
         this.tickets = tickets;
     }
 
     public void searchFlightTicketsPage() {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ``````````````````| SEARCH FLIGHT TICKETS |```````````````````
+        System.out.print(AnsiColors.ANSI_YELLOW + """
+                ______________________________________________________________
+                ║                  [ SEARCH FLIGHT TICKETS ]                 ║
+                ``````````````````````````````````````````````````````````````
                 
-                """);
+                """ + AnsiColors.ANSI_RESET);
         searchFlightTickets();
     }
 
@@ -36,14 +39,14 @@ public class PassengerActions {
 
         int option;
         do {
-            System.out.printf("""
-                    ( 1 ) - Flight Id : %s
-                    ( 2 ) - Origin : %s
-                    ( 3 ) - Destination : %s
-                    ( 4 ) - Date : %s
-                    ( 5 ) - Time : %s
-                    ( 6 ) - Price Range From : %,d To : %,d%n%n
-                    """, flightId, origin, destination, date, time, startPriceRange, endPriceRange);
+            System.out.printf(AnsiColors.ANSI_YELLOW + """
+                    ( 1 ) Flight Id : %s
+                    ( 2 ) Origin : %s
+                    ( 3 ) Destination : %s
+                    ( 4 ) Date : %s
+                    ( 5 ) Time : %s
+                    ( 6 ) Price Range From : %,d To : %,d%n%n
+                    """ + AnsiColors.ANSI_RESET, flightId, origin, destination, date, time, startPriceRange, endPriceRange);
 
             System.out.print("- Choose A Field As A Filter : ");
             int fieldNum = Console.checkInt();
@@ -75,15 +78,15 @@ public class PassengerActions {
                     System.out.print("To :");
                     endPriceRange = Console.checkInt();
                 }
-                default -> System.out.println("!! Chosen field is out of range !!");
+                default -> System.err.println("!! Chosen field is out of range !!");
             }
 
             while (true) {
-                System.out.print("""
+                System.out.print(AnsiColors.ANSI_YELLOW + """
                                             
-                        { 1 } Add Another Field As Filter
-                        { 2 } Search
-                        """);
+                        [ 1 ] Add Another Field As Filter
+                        [ 2 ] Search
+                        """ + AnsiColors.ANSI_RESET);
 
                 option = Console.checkInt();
                 if (option == 2) {
@@ -93,10 +96,10 @@ public class PassengerActions {
                 } else if (option == 1) {
                     break;
                 } else if (option == -1) {
-                    System.out.println("* Attention => You can only enter numbers ! *");
+                    System.err.println("* Attention => You can only enter numbers ! *");
                     Console.pauseProgram();
                 } else {
-                    System.out.println("Chosen Option is out of range !");
+                    System.err.println("Chosen Option is out of range !");
                     Console.pauseProgram();
                 }
             }
@@ -131,7 +134,7 @@ public class PassengerActions {
     }
 
     public void printSearchedFlights(int[] matchScores, int[] flightIndex) {
-        System.out.printf("""
+        System.out.printf(AnsiColors.ANSI_CYAN + """
                 +======================================================================================================+
                 ║ %-14s ║ %-10s ║ %-10s ║ %-13s ║ %-10s ║ %-6s ║ %-10s ║ %-6s ║
                 +======================================================================================================+
@@ -150,15 +153,27 @@ public class PassengerActions {
                         flight.getPrice(), flight.getSeats());
             }
         }
+        System.out.print(AnsiColors.ANSI_RESET);
     }
 
     public void bookingTicketPage(Passenger passenger) {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ``````````````````````| BOOKING TICKET |``````````````````````
+        System.out.print(AnsiColors.ANSI_YELLOW + """
+                ______________________________________________________________
+                ║                       [ BOOK TICKET ]                      ║
+                ``````````````````````````````````````````````````````````````
                 
-                """);
+                """ + AnsiColors.ANSI_RESET);
+
+        System.out.printf(AnsiColors.ANSI_CYAN + """
+                +=====================================================================================+
+                ║ %-10s ║ %-10s ║ %-13s ║ %-10s ║ %-6s ║ %-10s ║ %-6s ║
+                +=====================================================================================+
+                """, "Flight Id", "Origin", "Destination", "Date", "Time", "Price", "Seats");
+
+        flights.getFlights().forEach(System.out::print);
+        System.out.print(AnsiColors.ANSI_RESET);
+
         bookingTicket(passenger);
     }
 
@@ -166,15 +181,15 @@ public class PassengerActions {
         Flight flight = searchFlightId();
 
         if (!checkEmptySeats(flight)) {
-            System.out.println("* NO AVAILABLE SEATS !");
+            System.err.println("* NO AVAILABLE SEATS !");
         } else if (!checkCharge(flight, passenger)) {
-            System.out.println("* YOUR CHARGE IS NOT ENOUGH");
+            System.err.println("* YOUR CHARGE IS NOT ENOUGH");
         } else {
             updateDetailsAfterBooking(flight, passenger);
             Console.pauseProgram();
             String ticketId = tickets.addTicket(flight, passenger);
             flight.setBooked(true);
-            System.out.println("Ticket successfully booked !");
+            System.out.println(AnsiColors.ANSI_GREEN + "Ticket successfully booked !" + AnsiColors.ANSI_RESET);
 
             printTicket(flight, passenger, ticketId);
         }
@@ -188,7 +203,7 @@ public class PassengerActions {
 
             Flight flight = flights.findFlight(flightId);
             if (flight == null) {
-                System.out.println("Chosen flight id doesn't exist ! Try Again !");
+                System.err.println("Chosen flight id doesn't exist ! Try Again !");
             } else {
                 return flight;
             }
@@ -216,7 +231,7 @@ public class PassengerActions {
     }
 
     public void printTicket(Flight flight, Passenger passenger, String ticketId) {
-        System.out.printf("""
+        System.out.printf(AnsiColors.ANSI_BLUE + """
                     +===============================================+
                     |   * Ticket ID :   %s                  |
                     |   ~ Passenger :   %s                       |
@@ -226,7 +241,7 @@ public class PassengerActions {
                     |   - Date :    %s    Time :    %s   |
                     |                                               |
                     +===============================================+
-                    """,
+                    """ + AnsiColors.ANSI_RESET,
                 ticketId, passenger.getUsername(), flight.getFlightId(),
                 flight.getOrigin(), flight.getDestination(), flight.getDate(),
                 flight.getTime());
@@ -234,16 +249,16 @@ public class PassengerActions {
 
     public void ticketCancellationPage(Passenger passenger) {
         Console.clear();
-        System.out.print("""
-                    ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                    ```````````````````| Ticket Cancellation |````````````````````
+        System.out.print(AnsiColors.ANSI_YELLOW + """
+                ______________________________________________________________
+                ║                  [ TICKET CANCELLATION ]                   ║
+                ``````````````````````````````````````````````````````````````
 
-                    """);
+                """ + AnsiColors.ANSI_RESET);
         cancellingTicket(passenger);
     }
 
     public void cancellingTicket(Passenger passenger) {
-        System.out.print("~ Ticket ID : ");
         Ticket ticket = searchTicketId();
 
         updateSeats(ticket);
@@ -252,7 +267,7 @@ public class PassengerActions {
         tickets.removeTicket(ticket);
 
         Console.pauseProgram();
-        System.out.println("Ticket successfully cancelled ! ");
+        System.out.println(AnsiColors.ANSI_GREEN + "Ticket successfully cancelled ! " + AnsiColors.ANSI_RESET);
         Console.pressKey();
     }
 
@@ -263,7 +278,7 @@ public class PassengerActions {
 
             Ticket ticket = tickets.findTicket(ticketId);
             if (ticket == null) {
-                System.out.println("Ticket is NOT FOUND ! Try Again !");
+                System.err.println("Ticket is NOT FOUND ! Try Again !");
             } else {
                 return ticket;
             }
@@ -284,17 +299,18 @@ public class PassengerActions {
 
     public void bookedTicketsPage(Passenger passenger) {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ``````````````````````| Booked Tickets |``````````````````````
+        System.out.print(AnsiColors.ANSI_YELLOW + """
+               ______________________________________________________________
+               ║                      [ BOOKED TICKETS ]                    ║
+               ``````````````````````````````````````````````````````````````
                     
-                """);
+                """ + AnsiColors.ANSI_RESET);
         printBookedTicket(passenger);
     }
 
     public void printBookedTicket(Passenger passenger) {
         showMessages(passenger);
-        System.out.printf("""
+        System.out.printf(AnsiColors.ANSI_CYAN + """
                 +--------------------------------------------------------------------------------------------------+
                 | %-10s | %-10s | %-10s | %-13s | %-10s | %-6s | %-10s | %-6s |
                 +--------------------------------------------------------------------------------------------------+
@@ -305,6 +321,7 @@ public class PassengerActions {
                 System.out.print(ticket);
             }
         });
+        System.out.print(AnsiColors.ANSI_RESET);
         Console.pressKey();
     }
 
@@ -314,10 +331,10 @@ public class PassengerActions {
         for (Ticket ticket : tickets.getTickets()) {
             if (ticket.getPassenger().equals(passenger)) {
                 if (ticket.isRemoved()) {
-                    System.out.println(ticket.getMessage());
+                    System.err.println(ticket.getMessage());
                     removed.add(ticket);
                 } else if (ticket.isUpdated()) {
-                    System.out.println(ticket.getMessage());
+                    System.err.println(ticket.getMessage());
                     ticket.setUpdated(false);
                 }
             }
@@ -332,11 +349,12 @@ public class PassengerActions {
 
     public void addChargePage(Passenger passenger) {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ````````````````````````| ADD CHARGE |````````````````````````
+        System.out.print(AnsiColors.ANSI_YELLOW + """
+                ______________________________________________________________
+                ║                        [ ADD CHARGE ]                      ║
+                ``````````````````````````````````````````````````````````````
                
-                """);
+                """ + AnsiColors.ANSI_RESET);
         addingCharge(passenger);
     }
 
@@ -349,7 +367,7 @@ public class PassengerActions {
             System.out.print("- How much money do you wanna add to your charge? : ");
             addedCharge = Console.checkInt();
             if (addedCharge == -1) {
-                System.out.println("* Attention => You can only enter numbers ! *");
+                System.err.println("* Attention => You can only enter numbers ! *");
             } else {
                 break;
             }
@@ -357,7 +375,7 @@ public class PassengerActions {
 
         Console.pauseProgram();
         passenger.setCharge(currentCharge + addedCharge);
-        System.out.println(">> Charge successfully added ! <<");
+        System.out.println(AnsiColors.ANSI_GREEN + ">> Charge successfully added ! <<" + AnsiColors.ANSI_RESET);
         System.out.printf("$ Current charge : %,d%n", passenger.getCharge());
         Console.pressKey();
     }

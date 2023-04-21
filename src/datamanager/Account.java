@@ -2,15 +2,17 @@ package datamanager;
 
 import data.Admin;
 import data.Passenger;
+import utils.AnsiColors;
 import utils.Console;
 
 import java.util.Scanner;
 
 public class Account {
-    private final Scanner input = new Scanner(System.in);
+    private final Scanner input;
     private final Users users;
 
-    public Account(Users users) {
+    public Account(Scanner input, Users users) {
+        this.input = input;
         this.users = users;
     }
 
@@ -56,9 +58,9 @@ public class Account {
             } while (!usernameRequirements(username));
 
             if (users.findPassenger(username) != null || users.findAdmin(username) != null) {
-                System.out.println("* Username is already taken ! Try another username :)\n");
+                System.err.println("* Username is already taken ! Try another username :)\n");
             } else {
-                System.out.println("~ Username accepted !");
+                System.out.println(AnsiColors.ANSI_GREEN + "~ Username accepted !" + AnsiColors.ANSI_RESET);
                 return username;
             }
         }
@@ -77,23 +79,23 @@ public class Account {
             confirmPassword = input.nextLine();
 
             if(password.equals(confirmPassword)) {
-                System.out.println("~ Password accepted !");
+                System.out.println(AnsiColors.ANSI_GREEN + "~ Password accepted !" + AnsiColors.ANSI_RESET);
                 return password;
             } else {
-                System.out.println("!! Passwords do NOT match...Try Again :)\n");
+                System.err.println("!! Passwords do NOT match...Try Again :)\n");
             }
         }
     }
 
     private boolean usernameRequirements(String username) {
         if (username.contains(" ")) {
-            System.out.println("* Unacceptable username : Username should not include spaces !\n");
+            System.err.println("* Unacceptable username : Username should not include spaces !\n");
             return false;
         } else if (!username.matches("^[a-zA-Z]\\w*")) {
-            System.out.println("* Unacceptable username : Username should start with a letter !\n");
+            System.err.println("* Unacceptable username : Username should start with a letter !\n");
             return false;
         } else if (!username.matches("^\\w{5,}$")) {
-            System.out.println("* Unacceptable username : Username should be at least five characters long !\n");
+            System.err.println("* Unacceptable username : Username should be at least five characters long !\n");
             return false;
         }
         return true;
@@ -101,13 +103,13 @@ public class Account {
 
     private boolean passwordRequirements(String password) {
         if (password.contains(" ")) {
-            System.out.println("* Unacceptable password : Password should not include spaces !\n");
+            System.err.println("* Unacceptable password : Password should not include spaces !\n");
             return false;
         } else if (!password.matches("^[A-Za-z0-9_]*$")) {
-            System.out.println("* Unacceptable password : Password can only include letters, numbers and dash !\n");
+            System.err.println("* Unacceptable password : Password can only include letters, numbers and dash !\n");
             return false;
         } else if (!password.matches("^\\w{4,}$")) {
-            System.out.println("* Unacceptable password : Password should be at least four characters long !\n");
+            System.err.println("* Unacceptable password : Password should be at least four characters long !\n");
             return false;
         }
         return true;
@@ -132,7 +134,7 @@ public class Account {
                 matchPassword(username, "admin");
                 return username;
             } else {
-                System.out.println("* USERNAME NOT FOUND ! Try Again !\n");
+                System.err.println("* USERNAME NOT FOUND ! Try Again !\n");
             }
         }
     }
@@ -152,18 +154,19 @@ public class Account {
                     return;
                 }
             } else {
-                System.out.println("* INCORRECT PASSWORD ! Try Again !\n");
+                System.err.println("* INCORRECT PASSWORD ! Try Again !\n");
             }
         }
     }
 
     public void changePasswordPage(Passenger passenger) {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                `````````````````````| CHANGE PASSWORD |``````````````````````
+        System.out.print(AnsiColors.ANSI_YELLOW + """
+                ______________________________________________________________
+                ║                      [ CHANGE PASSWORD ]                   ║
+                ``````````````````````````````````````````````````````````````
                 
-                """);
+                """ + AnsiColors.ANSI_RESET);
         changingPassword(passenger);
     }
 
@@ -178,7 +181,7 @@ public class Account {
             if(password.equals(passenger.getPassword())){
                 break;
             } else {
-                System.out.println("* INCORRECT PASSWORD ! Try Again !\n");
+                System.err.println("* INCORRECT PASSWORD ! Try Again !\n");
             }
         }
 
@@ -196,27 +199,28 @@ public class Account {
                 System.out.println("~ Password accepted !");
                 break;
             } else {
-                System.out.println("!! Passwords do NOT match...Try Again :)\n");
+                System.err.println("!! Passwords do NOT match...Try Again :)\n");
             }
         }
 
         Console.pauseProgram();
         passenger.setPassword(password);
-        System.out.println("Password successfully changed !");
+        System.out.println(AnsiColors.ANSI_GREEN + "Password successfully changed !" + AnsiColors.ANSI_RESET);
         Console.pressKey();
     }
 
     public void addAdminPage() {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ````````````````````````| ADD ADMIN |`````````````````````````
+        System.out.print(AnsiColors.ANSI_PURPLE + """
+                ______________________________________________________________
+                ║                        [ ADD ADMIN ]                       ║
+                ``````````````````````````````````````````````````````````````
                 
-                """);
+                """ + AnsiColors.ANSI_RESET);
         String username = signUp("admin");
 
         System.out.println("\nAdding Admin successfully completed !");
-        System.out.printf("{ Added Admin => %s }%n", username);
+        System.out.printf(AnsiColors.ANSI_GREEN + "{ Added Admin => %s }%n", username + AnsiColors.ANSI_RESET);
 
         Console.pressKey();
     }

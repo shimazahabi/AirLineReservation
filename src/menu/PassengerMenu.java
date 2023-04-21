@@ -3,6 +3,7 @@ package menu;
 import data.Passenger;
 import datamanager.Account;
 import datamanager.PassengerActions;
+import utils.AnsiColors;
 import utils.Console;
 import java.util.Scanner;
 
@@ -32,29 +33,27 @@ public class PassengerMenu extends BaseMenu {
     @Override
     public void printMenu() {
         Console.clear();
-        System.out.print("""
-                     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-                                   ⠀ ⠀⠀⠀⠀⠀⢸⣿⠛⠛⠛⠛⠛⠛⣿⣧⠀⠀⠀⠀⠀⠀
-                                   ⠀⠀ ⠀⠀⠀⠀⡘⠛⠀⠀⠀⠀  ⠀⠀⠛⠃⠀⠀⠀⠀⠀⠀
-                                   ⢰⣿⣿⡇⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⢸⣿⣿⣆
-                                   ⢸⣿⣿⡗⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⢸⣿⣿⣧
-                                   ⢸⣿⣿⡇⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⢸⣿⣿⡧
-                                   ⢸⣿⣿⡇⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⢸⣿⣿⣏
-                                   ⢸⣿⣿⡇⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⢸⣿⣿⣧
-                                   ⢸⣿⣿⡗⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⢸⣿⣿⡧
-                                   ⠈⠛⠛⠋⠀⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠂⠘⠛⠛⠁
-                                  
-                  ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                  ``````````````````| PASSENGER MENU OPTIONS |``````````````````
-                                             
-                  { 1 } - Change Password
-                  { 2 } - Search Flight Tickets
-                  { 3 } - Booking Ticket
-                  { 4 } - Ticket Cancellation
-                  { 5 } - Booked Tickets
-                  { 6 } - Add Charge
-                  { 0 } - Sign Out
-                    """);
+        System.out.print(AnsiColors.ANSI_YELLOW + """
+                   ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                  _____              _____   _____  ______  _   _   _____  ______  _____ \s
+                 |  __ \\     /\\     / ____| / ____||  ____|| \\ | | / ____||  ____||  __ \\\s
+                 | |__) |   /  \\   | (___  | (___  | |__   |  \\| || |  __ | |__   | |__) |
+                 |  ___/   / /\\ \\   \\___ \\  \\___ \\ |  __|  | . ` || | |_ ||  __|  |  _  /\s
+                 | |      / ____ \\  ____) | ____) || |____ | |\\  || |__| || |____ | | \\ \\\s
+                 |_|     /_/    \\_\\|_____/ |_____/ |______||_| \\_| \\_____||______||_|  \\_\\
+                                                                                                                                                \s
+                ______________________________________________________________________________
+                ║                        [ PASSENGER MENU OPTIONS ]                          ║
+                ``````````````````````````````````````````````````````````````````````````````
+                                           
+                [ 1 ] Change Password
+                [ 2 ] Search Flight Tickets
+                [ 3 ] Booking Ticket
+                [ 4 ] Ticket Cancellation
+                [ 5 ] Booked Tickets
+                [ 6 ] Add Charge
+                [ 0 ] Sign Out
+                  """ + AnsiColors.ANSI_RESET);
     }
 
     @Override

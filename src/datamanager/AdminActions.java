@@ -1,28 +1,31 @@
 package datamanager;
 
 import data.Flight;
+import utils.AnsiColors;
 import utils.Console;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class AdminActions {
-    private final Scanner input = new Scanner(System.in);
+    private final Scanner input;
     private final Flights flights;
     private final Tickets tickets;
 
-    public AdminActions(Flights flights, Tickets tickets) {
+    public AdminActions(Scanner input, Flights flights, Tickets tickets) {
+        this.input = input;
         this.flights = flights;
         this.tickets = tickets;
     }
 
     public void addFlightPage() {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                ```````````````````````| ADD FLIGHTS |````````````````````````
+        System.out.print(AnsiColors.ANSI_PURPLE + """
+                ______________________________________________________________
+                ║                       [ ADD FLIGHTS ]                      ║
+                ``````````````````````````````````````````````````````````````
                 
-                """);
+                """ + AnsiColors.ANSI_RESET);
         addingFlight();
     }
 
@@ -38,7 +41,7 @@ public class AdminActions {
             System.out.print("- Destination : ");
             destination = cityValidation();
             if (origin.equals(destination)) {
-                System.out.println("Origin and destination can not be the same city ! Try Again :");
+                System.err.println("Origin and destination can not be the same city ! Try Again :");
             } else {
                 break;
             }
@@ -56,19 +59,20 @@ public class AdminActions {
         System.out.print("- Seats : ");
         int seats = seatsValidation();
 
-        Console.pressKey();
+        Console.pauseProgram();
         flights.addFlight(flightId, origin, destination, date, time, price, seats);
-        System.out.println("\n>> Flight is successfully added ! <<\n");
+        System.out.println(AnsiColors.ANSI_GREEN + "\n>> Flight is successfully added ! <<\n" + AnsiColors.ANSI_RESET);
         Console.pressKey();
     }
 
     public void updateFlightPage() {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                `````````````````````| UPDATE FLIGHTS |```````````````````````
+        System.out.print(AnsiColors.ANSI_PURPLE + """
+                ______________________________________________________________
+                ║                     [ UPDATE FLIGHTS ]                     ║
+                ``````````````````````````````````````````````````````````````
                 
-                """);
+                """ + AnsiColors.ANSI_RESET);
         updatingFlight();
     }
 
@@ -115,7 +119,7 @@ public class AdminActions {
                 }
                 case 6 -> {
                     if (flight.isBooked()) {
-                        System.out.println("* You can't change the price, because this flight is booked by passengers !");
+                        System.err.println("* You can't change the price, because this flight is booked by passengers !");
                     } else {
                         System.out.print("- Update Price : ");
                         update2 = priceValidation();
@@ -128,39 +132,39 @@ public class AdminActions {
                     flight.setSeats(update2);
                 }
                 case -1 -> {
-                    System.out.println("* Attention => You can only enter numbers ! *");
+                    System.err.println("* Attention => You can only enter numbers ! *");
                     Console.pauseProgram();
                 }
                 default -> {
-                    System.out.println("Chosen field is out of range !");
+                    System.err.println("Chosen field is out of range !");
                     Console.pauseProgram();
                 }
             }
 
             while (true) {
-                System.out.print("""
+                System.out.print(AnsiColors.ANSI_PURPLE + """
                                             
-                        { 1 } - Update Another Field
-                        { 2 } - Finish Updating This Flight
-                        """);
+                        [ 1 ] Update Another Field
+                        [ 2 ] Finish Updating This Flight
+                        """ + AnsiColors.ANSI_RESET);
                 option = Console.checkInt();
                 if (option == 2 || option == 1) {
                     break;
                 } else if (option == -1) {
-                    System.out.println("* Attention => You can only enter numbers ! *");
+                    System.err.println("* Attention => You can only enter numbers ! *");
                     Console.pauseProgram();
                 } else {
-                    System.out.println("Chosen Option is out of range !");
+                    System.err.println("Chosen Option is out of range !");
                     Console.pauseProgram();
                 }
             }
         } while (option != 2);
-        System.out.println(">> Flight is successfully updated ! <<\n");
+        System.out.println(AnsiColors.ANSI_GREEN + ">> Flight is successfully updated ! <<\n" + AnsiColors.ANSI_RESET);
         Console.pressKey();
     }
 
     public void printFields(Flight flight) {
-        System.out.printf("""
+        System.out.printf(AnsiColors.ANSI_PURPLE + """
                                         
                         ( 1 ) Flight Id : %s
                         ( 2 ) Origin : %s
@@ -170,7 +174,7 @@ public class AdminActions {
                         ( 6 ) Price : %,d
                         ( 7 ) Seats : %d
                                         
-                        """,
+                        """ + AnsiColors.ANSI_RESET,
                 flight.getFlightId(),
                 flight.getOrigin(),
                 flight.getDestination(),
@@ -182,11 +186,12 @@ public class AdminActions {
 
     public void removeFlightPage() {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                `````````````````````| Remove FLIGHTS |```````````````````````
+        System.out.print(AnsiColors.ANSI_PURPLE + """
+                ______________________________________________________________
+                ║                      [ REMOVE FLIGHTS ]                    ║
+                ``````````````````````````````````````````````````````````````
                     
-                """);
+                """ + AnsiColors.ANSI_RESET);
         removingFlight();
     }
 
@@ -194,11 +199,11 @@ public class AdminActions {
         Flight flight = searchFlightId();
 
         Console.pauseProgram();
-        System.out.print("""
+        System.out.print(AnsiColors.ANSI_PURPLE + """
                 Are you sure that you wanna remove the flight?
                 - Enter 'y' for yes.
                 - Enter 'n' for no.
-                """);
+                """ + AnsiColors.ANSI_RESET);
 
         do {
             String answer = input.nextLine();
@@ -207,13 +212,13 @@ public class AdminActions {
             if (answer.equals("y")) {
                 tickets.removingTicketsMessage(flight);
                 flights.removeFlight(flight);
-                System.out.println(">> Flight is successfully removed ! <<\n");
+                System.out.println(AnsiColors.ANSI_GREEN + ">> Flight is successfully removed ! <<\n" + AnsiColors.ANSI_RESET);
                 break;
             } else if (answer.equals("n")) {
-                System.out.println(">> Flight isn't removed ! <<\n");
+                System.out.println(AnsiColors.ANSI_GREEN + ">> Flight isn't removed ! <<\n" + AnsiColors.ANSI_RESET);
                 break;
             } else {
-                System.out.println("Invalid Input ! Try Again : ");
+                System.err.println("Invalid Input ! Try Again : ");
             }
         } while (true);
         Console.pressKey();
@@ -226,7 +231,7 @@ public class AdminActions {
 
             Flight flight = flights.findFlight(flightId);
             if (flight == null) {
-                System.out.println("Chosen flight doesn't exist ! Try Again !");
+                System.err.println("Chosen flight doesn't exist ! Try Again !");
             } else {
                 return flight;
             }
@@ -237,13 +242,13 @@ public class AdminActions {
         while (true) {
             String flightId = input.nextLine();
             if (!flightId.matches("^[a-zA-z]{2}-[0-9]{2}$")) {
-                System.out.println("""
+                System.err.println("""
                         ** Flight Id is not acceptable !
                         (Correct Format => [a-zA-Z]*2 - [0-9]*2)
                         (Example => SA-18)
                         Try Again :\s""");
             } else if (flights.findFlight(flightId) != null) {
-                System.out.println("""
+                System.err.println("""
                         ** Flight Id already exists !
                         Try Again :\s""");
             } else {
@@ -258,7 +263,7 @@ public class AdminActions {
             if (city.matches("[a-zA-Z]+$")){
                 return city.substring(0, 1).toUpperCase() + city.substring(1);
             } else {
-                System.out.println("""
+                System.err.println("""
                         ** City name should not include numbers !
                         Try Again :\s""");
             }
@@ -277,7 +282,7 @@ public class AdminActions {
             }
             catch (ParseException e)
             {
-                System.out.println("""
+                System.err.println("""
                         ** Invalid date format !
                         (Correct Format => yyyy-MM-dd)
                         (Example => 1402-01-10)
@@ -290,7 +295,7 @@ public class AdminActions {
         while (true) {
             String time = input.nextLine();
             if (!time.matches("^[0-9]{2}:[0-9]{2}$")) {
-                System.out.println("""
+                System.err.println("""
                         ** Time format is not acceptable !
                         (Correct Format => hh:mm)
                         (Example => 12:30)
@@ -306,7 +311,7 @@ public class AdminActions {
             int price = Console.checkInt();
 
             if (price < 0) {
-                System.out.print("""
+                System.err.print("""
                         Invalid Price Input !
                         Try Again :\s""");
             } else {
@@ -320,11 +325,11 @@ public class AdminActions {
             int seats = Console.checkInt();
 
             if (seats < 0) {
-                System.out.print("""
+                System.err.print("""
                         Invalid Seat Input !
                         Try Again :\s""");
             } else if (seats > 1000) {
-                System.out.print("""
+                System.err.print("""
                         Airplane doesn't have this capacity !
                         Try Again :\s""");
             } else {
@@ -335,22 +340,24 @@ public class AdminActions {
 
     public void flightSchedulesPage() {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                `````````````````````| FLIGHT SCHEDULES |`````````````````````
+        System.out.print(AnsiColors.ANSI_PURPLE + """
+                ______________________________________________________________
+                ║                     [ FLIGHT SCHEDULES ]                   ║
+                ``````````````````````````````````````````````````````````````
                 
-                """);
+                """ + AnsiColors.ANSI_RESET);
         printFlightSchedules();
         Console.pressKey();
     }
 
     public void printFlightSchedules() {
-        System.out.printf("""
+        System.out.printf(AnsiColors.ANSI_CYAN + """
                 +=====================================================================================+
                 ║ %-10s ║ %-10s ║ %-13s ║ %-10s ║ %-6s ║ %-10s ║ %-6s ║
                 +=====================================================================================+
                 """, "Flight Id", "Origin", "Destination", "Date", "Time", "Price", "Seats");
 
         flights.getFlights().forEach(System.out::print);
+        System.out.print(AnsiColors.ANSI_RESET);
     }
 }

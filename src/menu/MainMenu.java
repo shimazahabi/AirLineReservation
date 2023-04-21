@@ -1,6 +1,7 @@
 package menu;
 
 import datamanager.*;
+import utils.AnsiColors;
 import utils.Console;
 import java.util.Scanner;
 
@@ -22,25 +23,37 @@ public class MainMenu extends BaseMenu {
     @Override
     public void printMenu() {
         Console.clear();
-        System.out.print("""
-                             ⢳⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-                    ⠀⠀⠀⠀⠀⠀  ⠀⠀⢿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-                    ⠀⠀⠀⠀⠀⠀  ⠀⠀⠈⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-                   ⢲⡄⠀⠀⠀⠀  ⠀⠀⠀⢙⣿⣿⡶⠆⠀⠀⠀⠀⠀⠀⠀
-                    ⣘⣿⣦⣤⣤⣤⣶⣶⣶⣶⣿⣿⣿⣶⣶⣶⣶⣶⣦⣄⡀  +----------------------------------------+
-                    ⢩⣿⠟⠛⠻⠿⠿⠿⠿⠿⣿⣿⣿⠿⠿⠿⠿⠿⠛⠋⠁  |  WELCOME TO AIRLINE RESERVATION SYSTEM |\s
-                   ⠼⠋⠀⠀⠀⠀⠀ ⠀ ⠀⣸⣿⣿⠷⠆⠀⠀⠀⠀⠀⠀⠀     +----------------------------------------+
-                    ⠀⠀⠀⠀⠀⠀⠀ ⠀ ⢀⣾⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
-                    ⠀⠀⠀⠀⠀⠀⠀  ⠀⣾⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-                    ⠀⠀⠀⠀⠀⠀  ⠀⣼⠏⠀
-                                    
-                    ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                    ````````````````````| MAIN MENU OPTIONS |`````````````````````
-                                             
-                    { 1 } - Sign In
-                    { 2 } - Sign Up
-                    { 0 } - Exit
-                    """);
+        System.out.print(AnsiColors.ANSI_CYAN + """
+                                      ___
+                                      \\\\ \\
+                                       \\\\ `\\
+                    ___                 \\\\  \\
+                   |    \\                \\\\  `\\
+                   |_____\\                \\    \\
+                   |______\\                \\    `\\
+                   |       \\                \\     \\
+                   |      __\\__---------------------------------._.
+                 __|---~~~__o_o_o_o_o_o_o_o_o_o_o_o_o_o_o_o_o_o_[][\\__
+                |___                         /~      )                \\__
+                    ~~~---..._______________/      ,/_________________/
+                                           /      /
+                                          /     ,/
+                                         /     /
+                                        /    ,/
+                                       /    /        {  WELCOME
+                                      //  ,/              T0
+                                     //  /             AIRLINE
+                                    // ,/            RESERVATION
+                                   //_/                 SYSTEM   }
+                                                     
+                 ______________________________________________________________
+                 ║                    [ MAIN MENU OPTIONS ]                   ║
+                 ``````````````````````````````````````````````````````````````
+                                          
+                 [ 1 ] Sign In
+                 [ 2 ] Sign Up
+                 [ 0 ] Exit
+                 """ + AnsiColors.ANSI_RESET);
     }
 
     @Override
@@ -67,14 +80,15 @@ public class MainMenu extends BaseMenu {
 
     public void signUpPage() {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                `````````````````````````| SIGN UP |``````````````````````````
-                """);
+        System.out.print(AnsiColors.ANSI_CYAN + """
+                ______________________________________________________________
+                ║                        [ SIGN UP ]                         ║
+                ``````````````````````````````````````````````````````````````
+                """ + AnsiColors.ANSI_RESET);
         String username = dataBase.getAccount().signUp("passenger");
 
         System.out.println("\nSigning Up successfully completed !");
-        System.out.printf("{ WELCOME USER => %s }%n", username);
+        System.out.printf(AnsiColors.ANSI_GREEN + "{ WELCOME USER => %s }%n", username + AnsiColors.ANSI_RESET);
         Console.pressKey();
 
         dataBase.getPassengerMenu().showMenu(dataBase.getUsers().findPassenger(username));
@@ -82,14 +96,15 @@ public class MainMenu extends BaseMenu {
 
     public void signInPage() {
         Console.clear();
-        System.out.print("""
-                ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                `````````````````````````| SIGN In |``````````````````````````
+        System.out.print(AnsiColors.ANSI_CYAN + """
+                ______________________________________________________________
+                ║                        [ SIGN IN ]                         ║
+                ``````````````````````````````````````````````````````````````
                 
-                """);
+                """+ AnsiColors.ANSI_RESET);
         String username = dataBase.getAccount().signIn();
 
-        System.out.printf("\n{ WELCOME USER => %s }%n", username);
+        System.out.printf(AnsiColors.ANSI_GREEN + "\n{ WELCOME USER => %s }%n", username + AnsiColors.ANSI_RESET);
         Console.pressKey();
 
         if (dataBase.getUsers().findAdmin(username) != null) {

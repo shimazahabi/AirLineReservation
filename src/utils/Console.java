@@ -27,14 +27,15 @@ public class Console {
      * This method waits for pressing a key to continue.
      */
     public static void pressKey() {
-        System.out.println("Please press a key to continue...");
+        System.out.println(AnsiColors.ANSI_PURPLE + "Please press a key to continue..." + AnsiColors.ANSI_RESET);
         try{System.in.read();}
         catch(Exception e){	e.printStackTrace();}
     }
 
+    public static final int SLEEP_TIME = 1000;
     public static void pauseProgram() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(SLEEP_TIME);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

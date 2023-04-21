@@ -1,6 +1,7 @@
 package menu;
 
 import datamanager.Account;
+import utils.AnsiColors;
 import utils.Console;
 import datamanager.AdminActions;
 import java.util.Scanner;
@@ -28,28 +29,26 @@ public class AdminMenu extends BaseMenu {
     @Override
     public void printMenu() {
         Console.clear();
-        System.out.print("""
-                                         ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀
-                                        ⠀⠀⠀⠀⢀⣴⡶⠟⠛⠛⠛⠛⠻⢶⣦⡀⠀⠀⠀⠀
-                                       ⠀ ⠀⢀⣴⡟⠁ ⣠⣶⣿⣿⣶⣄ ⠈⠻⣦⡀⠀⠀
-                                       ⠀  ⣾⡏⠀⠀⠀⣿⣿⣿⣿⣿⣿⠀⠀  ⢹⣷⠀⠀
-                                         ⢰⣿⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⠀⠀⠀ ⠀⣿⡆⠀
-                                       ⠀ ⢸⣿⠀⠀⠀⠀⠈⣿⣿⣿⣿⠁⠀⠀⠀⠀ ⣿⡇⠀
-                                        ⠀ ⣿⡆⢀⣀⣤⣾⣿⣿⣿⣿⣷⣤⣀⡀⢰⣿⠀⠀
-                                      ⠀ ⠀ ⠘⢿⣮⠿⣿⣿⣿⣿⣿⣿⣿⣿⠿⣵⡿⠀
-                                      ⠀⠀ ⠀ ⠀⠙⢷⣾⣭⣛⣛⣛⣛⣭⣵⡾⠋⠀⠀⠀⠀
-                                      ⠀⠀⠀ ⠀ ⠀⠀⠀⠉⠙⠛⠛⠋⠉⠀⠀⠀⠀⠀⠀
-                                    
-                     ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                     ````````````````````| ADMIN MENU OPTIONS |````````````````````
-                                                 
-                     { 1 } - Add Flight
-                     { 2 } - Update Flight
-                     { 3 } - Remove Flight
-                     { 4 } - Flight Schedules
-                     { 5 } - Add Admin
-                     { 0 } - Sign Out
-                    """);
+        System.out.print(AnsiColors.ANSI_PURPLE + """
+                                     
+                         _        ______     ____    ____   _____   ____  _____ \s
+                        / \\      |_   _ `.  |_   \\  /   _| |_   _| |_   \\|_   _|\s
+                       / _ \\       | | `. \\   |   \\/   |     | |     |   \\ | |  \s
+                      / ___ \\      | |  | |   | |\\  /| |     | |     | |\\ \\| |  \s
+                    _/ /   \\ \\_   _| |_.' /  _| |_\\/_| |_   _| |_   _| |_\\   |_ \s
+                   |____| |____| |______.'  |_____||_____| |_____| |_____|\\____|\s
+                                                                             \s
+                   ______________________________________________________________
+                   ║                    [ ADMIN MENU OPTIONS ]                  ║
+                   ``````````````````````````````````````````````````````````````
+                                               
+                   [ 1 ] Add Flight
+                   [ 2 ] Update Flight
+                   [ 3 ] Remove Flight
+                   [ 4 ] Flight Schedules
+                   [ 5 ] Add Admin
+                   [ 0 ] Sign Out
+                  """ + AnsiColors.ANSI_RESET);
     }
 
     @Override
