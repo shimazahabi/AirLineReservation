@@ -11,6 +11,9 @@ TAs: [Mohsen Gholami](https://about.me/iMohsen02) - [Pooria Azami](https://githu
 
 **AIRLINES RESERVATION SYSTEM**
 
+<div id="header" align="center">
+  <img src="https://media.giphy.com/media/SwloPk6TlrfWqOJs5f/giphy.gif" width="250"/>
+</div>
 
 This project aims to simulate the online reservation system of airline tickets in a console application (non-graphics). The airline reservations System contains airline schedules, passengerActions reservations, and ticket records. This system includes two types of users like passengers, and system administrator.
 
