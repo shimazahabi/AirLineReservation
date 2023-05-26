@@ -1,9 +1,11 @@
 package data;
 
+import datamanager.WritableReadable;
+
 /**
  * This class is for the flight details. (Including flightId, origin, destination, date, time, price, seats, booked)
  */
-public class Flight {
+public class Flight implements WritableReadable {
     private String flightId;
     private String origin;
     private String destination;
@@ -13,7 +15,7 @@ public class Flight {
     private int seats;
     private boolean booked;
 
-    public Flight(String flightId, String origin, String destination, String date, String time, int price, int seats) {
+    public Flight(String flightId, String origin, String destination, String date, String time, int price, int seats, boolean booked) {
         this.flightId = flightId;
         this.origin = origin;
         this.destination = destination;
@@ -21,9 +23,8 @@ public class Flight {
         this.time = time;
         this.price = price;
         this.seats = seats;
+        this.booked = booked;
     }
-
-    public Flight() { }
 
     public String getFlightId() {
         return flightId;
@@ -87,5 +88,17 @@ public class Flight {
                             | %-10s | %-10s | %-13s | %-10s | %-6s | %,-10d | %-6d |
                             +-------------------------------------------------------------------------------------+
                             """, flightId, origin, destination, date, time, price, seats);
+    }
+
+    @Override
+    public String generate() {
+        return fixString(flightId) + fixString(origin) + fixString(destination) + fixString(date)
+               + fixString(time) + fixString(intToString(price)) + fixString(intToString(seats))
+               + fixString(booleanToString(booked));
+    }
+
+    @Override
+    public Flight separateRecord(String[] str) {
+        return new Flight(str[0], str[1], str[2], str[3], str[4], stringToInt(str[5]), stringToInt(str[6]), stringToBoolean(str[7]));
     }
 }

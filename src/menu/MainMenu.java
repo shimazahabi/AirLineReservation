@@ -97,7 +97,7 @@ public class MainMenu extends BaseMenu {
         System.out.printf(AnsiColors.ANSI_GREEN + "{ WELCOME USER => %s }%n", username + AnsiColors.ANSI_RESET);
         Console.pressKey();
 
-        dataBase.getPassengerMenu().showMenu(dataBase.getUsers().findPassenger(username));
+        dataBase.getPassengerMenu().showMenu(dataBase.getPassengers().findInFile(username));
     }
 
     /**
@@ -116,10 +116,10 @@ public class MainMenu extends BaseMenu {
         System.out.printf(AnsiColors.ANSI_GREEN + "\n{ WELCOME USER => %s }%n", username + AnsiColors.ANSI_RESET);
         Console.pressKey();
 
-        if (dataBase.getUsers().findAdmin(username) != null) {
+        if (dataBase.getAdmins().findInFile(username) != null) {
             dataBase.getAdminMenu().showMenu();
-        } else if (dataBase.getUsers().findPassenger(username) != null) {
-            dataBase.getPassengerMenu().showMenu(dataBase.getUsers().findPassenger(username));
+        } else if (dataBase.getPassengers().findInFile(username) != null) {
+            dataBase.getPassengerMenu().showMenu(dataBase.getPassengers().findInFile(username));
         }
     }
 }

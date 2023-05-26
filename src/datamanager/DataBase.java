@@ -1,7 +1,10 @@
 package datamanager;
 
-import menu.AdminMenu;
-import menu.PassengerMenu;
+import data.*;
+import menu.*;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -9,17 +12,63 @@ import java.util.Scanner;
  */
 public class DataBase {
     Scanner input = new Scanner(System.in);
-    private final Flights flights = new Flights();
-    private final Users users = new Users();
-    private final Tickets tickets = new Tickets();
-    private final Account account = new Account(input, users);
+    DataHolder<Admin> admins = new DataHolder<>(new Admin("",""),"Admins.dat",120, 2);
+    DataHolder<Passenger> passengers = new DataHolder<>(new Passenger("", "", 0),"Passengers.dat",180, 3);
+    Flights flights = new Flights(new Flight("", "", "", "", "", 0,0, false), "Flights.dat",480, 8);
+    Tickets tickets = new Tickets(new Ticket("", "", ""), "Tickets.dat",180, 3);
+
+    private final Account account = new Account(input, admins, passengers);
     private final AdminActions adminActions = new AdminActions(input, flights, tickets);
     private final AdminMenu adminMenu = new AdminMenu(adminActions, account, input, 5);
-    private final PassengerActions passengerActions = new PassengerActions(input, flights, tickets);
+    private final PassengerActions passengerActions = new PassengerActions(input, passengers, flights, tickets);
     private final PassengerMenu passengerMenu = new PassengerMenu(passengerActions, account, input, 6);
 
-    public Users getUsers() {
-        return users;
+    public Scanner getInput() {
+        return input;
+    }
+
+    public void setInput(Scanner input) {
+        this.input = input;
+    }
+
+    public DataHolder<Admin> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(DataHolder<Admin> admins) {
+        this.admins = admins;
+    }
+
+    public DataHolder<Passenger> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(DataHolder<Passenger> passengers) {
+        this.passengers = passengers;
+    }
+
+    public Flights getFlights() {
+        return flights;
+    }
+
+    public void setFlights(Flights flights) {
+        this.flights = flights;
+    }
+
+    public Tickets getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(Tickets tickets) {
+        this.tickets = tickets;
+    }
+
+    public AdminActions getAdminActions() {
+        return adminActions;
+    }
+
+    public PassengerActions getPassengerActions() {
+        return passengerActions;
     }
 
     public Account getAccount() {
@@ -38,17 +87,27 @@ public class DataBase {
      * This method predefines some flights and an admin.
      */
     public void preDefined() {
-        users.addAdmin("Admin", "Admin");
+        File config = new File("config.txt");
 
-        flights.addFlight("ST-19", "Shiraz", "Tehran", "1402-01-03", "23:20", 950000, 25);
-        flights.addFlight("YT-21", "Yazd", "Tabriz", "1402-01-05", "09:30", 900000, 45);
-        flights.addFlight("SK-23", "Shiraz", "Kish", "1402-01-06", "18:45", 985000, 59);
-        flights.addFlight("MA-74", "Mashhad", "Ahvaz", "1402-01-07", "11:40", 1200000, 62);
-        flights.addFlight("ST-35", "Shahrood", "Tehran", "1402-01-10", "15:20", 350000, 35);
-        flights.addFlight("ER-76", "Isfahan", "Rasht", "1402-01-13", "12:45", 1000000, 53);
-        flights.addFlight("TM-17", "Tehran", "Mashhad", "1402-01-15", "20:30", 870000, 13);
-        flights.addFlight("TI-38", "Tehran", "Istanbul", "1402-01-18", "13:45", 1500000, 47);
-        flights.addFlight("YT-22", "Yazd", "Tehran", "1402-01-23", "22:30", 980000, 27);
-        flights.addFlight("SA-30", "Shiraz", "Ahvaz", "1402-01-25", "12:50", 789000, 48);
+        if (!config.exists()) {
+            try {
+                config.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            admins.addToFile(new Admin("Admin", "Admin"));
+
+            flights.addToFile(new Flight("ST-19", "Shiraz", "Tehran", "1402-01-03", "23:20", 950000, 25, false));
+            flights.addToFile(new Flight("YT-21", "Yazd", "Tabriz", "1402-01-05", "09:30", 900000, 45, false));
+            flights.addToFile(new Flight("SK-23", "Shiraz", "Kish", "1402-01-06", "18:45", 985000, 59, false));
+            flights.addToFile(new Flight("MA-74", "Mashhad", "Ahvaz", "1402-01-07", "11:40", 1200000, 62, false));
+            flights.addToFile(new Flight("ST-35", "Shahrood", "Tehran", "1402-01-10", "15:20", 350000, 35, false));
+            flights.addToFile(new Flight("ER-76", "Isfahan", "Rasht", "1402-01-13", "12:45", 1000000, 53, false));
+            flights.addToFile(new Flight("TM-17", "Tehran", "Mashhad", "1402-01-15", "20:30", 870000, 13, false));
+            flights.addToFile(new Flight("TI-38", "Tehran", "Istanbul", "1402-01-18", "13:45", 1500000, 47, false));
+            flights.addToFile(new Flight("YT-22", "Yazd", "Tehran", "1402-01-23", "22:30", 980000, 27, false));
+            flights.addToFile(new Flight("SA-30", "Shiraz", "Ahvaz", "1402-01-25", "12:50", 789000, 48, false));
+        }
     }
 }

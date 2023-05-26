@@ -2,16 +2,20 @@ package datamanager;
 
 import data.*;
 import utils.*;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PassengerActions {
     private final Scanner input;
+    private DataHolder<Passenger> passengers;
     private final Flights flights;
     private final Tickets tickets;
 
-    public PassengerActions(Scanner input, Flights flights, Tickets tickets) {
+    public PassengerActions(Scanner input, DataHolder<Passenger> passengers, Flights flights, Tickets tickets) {
         this.input = input;
+        this.passengers = passengers;
         this.flights = flights;
         this.tickets = tickets;
     }
@@ -110,27 +114,31 @@ public class PassengerActions {
             }
         } while (option != 2);
 
-        int size = flights.getFlights().size();
-        int[] matchScores = new int[size];
-        int[] flightIndex = new int[size];
+        long size;
+        try {
+            size = flights.file.length() / flights.recordBytesNum;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        int[] matchScores = new int[(int) size];
+        ArrayList<Flight> foundFlights = new ArrayList<>();
 
-        flights.calculateMatchScores(matchScores, flightIndex, flightId, origin, destination, date, time, startPriceRange, endPriceRange);
+        try {
+            foundFlights = flights.calculateMatchScores(matchScores, flightId, origin, destination, date, time, startPriceRange, endPriceRange);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         if (searchedFlightExist(matchScores)) {
-            sortArrays(matchScores, flightIndex);
-            printSearchedFlights(matchScores, flightIndex);
+            sortArrays(matchScores, foundFlights);
+            printSearchedFlights(matchScores, foundFlights);
         } else {
             System.out.println(AnsiColors.ANSI_RED + "No flights found !" + AnsiColors.ANSI_RESET);
         }
         Console.pressKey();
     }
 
-    /**
-     * This method sorts two arrays simultaneously.
-     * @param matchScores the array that saves the matching score of the flights.
-     * @param flightIndex the array that saves the flight indexes.
-     */
-    public void sortArrays(int[] matchScores, int[] flightIndex) {
+    public void sortArrays(int[] matchScores, ArrayList<Flight> foundFlights) {
         int size = matchScores.length;
         for (int i = 0; i < size; i++) {
             for (int j = i + 1; j < size; j++) {
@@ -139,9 +147,10 @@ public class PassengerActions {
                     matchScores[i] = matchScores[j];
                     matchScores[j] = temp;
 
-                    temp = flightIndex[i];
-                    flightIndex[i] = flightIndex[j];
-                    flightIndex[j] = temp;
+                    Flight tempFlight;
+                    tempFlight = foundFlights.get(i);
+                    foundFlights.set(i, foundFlights.get(j));
+                    foundFlights.set(j, tempFlight);
                 }
             }
         }
@@ -161,21 +170,16 @@ public class PassengerActions {
         return false;
     }
 
-    /**
-     * This method prints the searched flights.
-     * @param matchScores the array that saves the matching score of the flights.
-     * @param flightIndex the array that saves the flight indexes.
-     */
-    public void printSearchedFlights(int[] matchScores, int[] flightIndex) {
+    public void printSearchedFlights(int[] matchScores, ArrayList<Flight> foundFlights) {
         System.out.printf(AnsiColors.ANSI_CYAN + """
                 +======================================================================================================+
                 ║ %-14s ║ %-10s ║ %-10s ║ %-13s ║ %-10s ║ %-6s ║ %-10s ║ %-6s ║
                 +======================================================================================================+
                 """, "Matching Score", "Flight Id", "Origin", "Destination", "Date", "Time", "Price", "Seats");
 
-        int size = flights.getFlights().size();
+        int size = matchScores.length;
         for (int i = size - 1; i >= 0; i--) {
-            Flight flight = flights.getFlights().get(flightIndex[i]);
+            Flight flight = foundFlights.get(i);
             if (matchScores[i] > 0) {
                 System.out.printf("""
                                 | %-14d | %-10s | %-10s | %-13s | %-10s | %-6s | %,-10d | %-6d |
@@ -208,7 +212,7 @@ public class PassengerActions {
                 +=====================================================================================+
                 """, "Flight Id", "Origin", "Destination", "Date", "Time", "Price", "Seats");
 
-        flights.getFlights().forEach(System.out::print);
+        flights.printFlights();
         System.out.print(AnsiColors.ANSI_RESET);
 
         bookingTicket(passenger);
@@ -219,7 +223,8 @@ public class PassengerActions {
      * @param passenger active passenger
      */
     public void bookingTicket(Passenger passenger) {
-        Flight flight = searchFlightId();
+        String flightId = searchFlightId();
+        Flight flight = flights.findInFile(flightId);
 
         if (!checkEmptySeats(flight)) {
             System.out.println(AnsiColors.ANSI_RED + "* NO AVAILABLE SEATS !" + AnsiColors.ANSI_RESET);
@@ -228,8 +233,9 @@ public class PassengerActions {
         } else {
             updateDetailsAfterBooking(flight, passenger);
             Console.pauseProgram();
-            String ticketId = tickets.addTicket(flight, passenger);
-            flight.setBooked(true);
+            String ticketId = tickets.ticketIdGenerator(flightId);
+            tickets.addToFile(new Ticket(ticketId, passenger.getUsername(), flightId));
+
             System.out.println(AnsiColors.ANSI_GREEN + "Ticket successfully booked !" + AnsiColors.ANSI_RESET);
 
             printTicket(flight, passenger, ticketId);
@@ -241,16 +247,16 @@ public class PassengerActions {
      * This method is for searching the flight id.
      * @return found flight
      */
-    public Flight searchFlightId() {
+    public String searchFlightId() {
         while (true) {
             System.out.print("~ Flight Id : ");
             String flightId = input.nextLine();
 
-            Flight flight = flights.findFlight(flightId);
+            Flight flight = flights.findInFile(flightId);
             if (flight == null) {
                 System.out.println(AnsiColors.ANSI_RED + "Chosen flight id doesn't exist ! Try Again !" + AnsiColors.ANSI_RESET);
             } else {
-                return flight;
+                return flightId;
             }
         }
     }
@@ -271,7 +277,7 @@ public class PassengerActions {
      * @return true if the charge is enough for buying the ticket.
      */
     public boolean checkCharge(Flight flight, Passenger passenger) {
-        int charge = passenger.getCharge();
+        int charge = passengers.findInFile(passenger.getUsername()).getCharge();
         int price = flight.getPrice();
         return charge >= price;
     }
@@ -283,11 +289,12 @@ public class PassengerActions {
      */
     public void updateDetailsAfterBooking(Flight flight, Passenger passenger) {
         int emptySeats = flight.getSeats() - 1;
-        flight.setSeats(emptySeats);
+        flights.updateFile(flight.getFlightId(), 7, String.valueOf(emptySeats));
+        flights.updateFile(flight.getFlightId(), 8, String.valueOf(true));
 
-        int charge = passenger.getCharge();
+        int charge = passengers.findInFile(passenger.getUsername()).getCharge();
         int price = flight.getPrice();
-        passenger.setCharge(charge - price);
+        passengers.updateFile(passenger.getUsername(), 3, String.valueOf(charge - price));
     }
 
     /**
@@ -333,12 +340,12 @@ public class PassengerActions {
      * @param passenger active passenger
      */
     public void cancellingTicket(Passenger passenger) {
-        Ticket ticket = searchTicketId();
+        String ticketId = searchTicketId();
 
-        updateSeats(ticket);
-        returnCharge(passenger, ticket);
+        updateSeats(ticketId);
+        returnCharge(passenger, ticketId);
 
-        tickets.removeTicket(ticket);
+        tickets.removeFromFile(ticketId);
 
         Console.pauseProgram();
         System.out.println(AnsiColors.ANSI_GREEN + "Ticket successfully cancelled ! " + AnsiColors.ANSI_RESET);
@@ -349,39 +356,32 @@ public class PassengerActions {
      * This method is for searching the ticket id.
      * @return the found ticket
      */
-    public Ticket searchTicketId() {
+    public String searchTicketId() {
         while (true) {
             System.out.print("~ Ticket Id : ");
             String ticketId = input.nextLine();
 
-            Ticket ticket = tickets.findTicket(ticketId);
+            Ticket ticket = tickets.findInFile(ticketId);
             if (ticket == null) {
                 System.out.println(AnsiColors.ANSI_RED + "Ticket is NOT FOUND ! Try Again !" + AnsiColors.ANSI_RESET);
             } else {
-                return ticket;
+                return ticketId;
             }
         }
     }
 
-    /**
-     * This method return charge of the user after cancelling the ticket.
-     * @param passenger active passenger
-     * @param ticket the cancelled ticket
-     */
-    public void returnCharge(Passenger passenger, Ticket ticket) {
-        int price = ticket.getFlight().getPrice();
+    public void returnCharge(Passenger passenger, String ticketId) {
+        Flight flight = flights.findInFile(tickets.findInFile(ticketId).getFlightId());
+        int price = flight.getPrice();
         int charge = passenger.getCharge();
-        passenger.setCharge(charge + price);
+        passengers.updateFile(passenger.getUsername(), 3, String.valueOf(charge + price));
     }
 
-    /**
-     * This method updates seats after cancelling.
-     * @param ticket cancelled ticket
-     */
-    public void updateSeats(Ticket ticket) {
-        Flight flight = ticket.getFlight();
+    public void updateSeats(String ticketId) {
+        String flightId = tickets.findInFile(ticketId).getFlightId();
+        Flight flight = flights.findInFile(flightId);
         int emptySeats = flight.getSeats() + 1;
-        flight.setSeats(emptySeats);
+        flights.updateFile(flightId, 7, String.valueOf(emptySeats));
     }
 
     /**
@@ -396,72 +396,29 @@ public class PassengerActions {
                ``````````````````````````````````````````````````````````````
                     
                 """ + AnsiColors.ANSI_RESET);
-        if (bookedTicketExist(passenger)) {
-            printBookedTicket(passenger);
+
+        ArrayList<Ticket> foundTickets = new ArrayList<>();
+        foundTickets = tickets.bookedTickets(passenger.getUsername());
+
+        if (foundTickets.size() > 0) {
+            printBookedTicket(foundTickets);
         } else {
             System.out.println(AnsiColors.ANSI_RED + "NO booked tickets found !" + AnsiColors.ANSI_RESET);
         }
         Console.pressKey();
     }
 
-    /**
-     * This method checks if any booked ticket exist.
-     * @param passenger active passenger
-     * @return true if any booked ticket exists.
-     */
-    public boolean bookedTicketExist(Passenger passenger) {
-        for (Ticket ticket : tickets.getTickets()) {
-            if (ticket.getPassenger().equals(passenger)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * This method prints the booked tickets.
-     * @param passenger active passenger
-     */
-    public void printBookedTicket(Passenger passenger) {
-        showMessages(passenger);
+    public void printBookedTicket(ArrayList<Ticket> foundTickets) {
         System.out.printf(AnsiColors.ANSI_CYAN + """
                 +--------------------------------------------------------------------------------------------------+
                 | %-10s | %-10s | %-10s | %-13s | %-10s | %-6s | %-10s | %-6s |
                 +--------------------------------------------------------------------------------------------------+
                 """, "Ticket Id", "Flight Id", "Origin", "Destination", "Date", "Time", "Price", "Seats" );
 
-        tickets.getTickets().forEach(ticket -> {
-            if (ticket.getPassenger().equals(passenger)) {
-                System.out.print(ticket);
-            }
+        foundTickets.forEach(ticket -> {
+            System.out.print(ticket.toString(flights.findInFile(ticket.getFlightId())));
         });
         System.out.print(AnsiColors.ANSI_RESET);
-    }
-
-    /**
-     * This method prints the messages of the flights if they are removed or updated.
-     * @param passenger active passenger
-     */
-    public void showMessages(Passenger passenger) {
-        ArrayList<Ticket> removed = new ArrayList<>();
-
-        for (Ticket ticket : tickets.getTickets()) {
-            if (ticket.getPassenger().equals(passenger)) {
-                if (ticket.isRemoved()) {
-                    System.out.println(AnsiColors.ANSI_RED + ticket.getMessage() + AnsiColors.ANSI_RESET);
-                    removed.add(ticket);
-                } else if (ticket.isUpdated()) {
-                    System.out.println(AnsiColors.ANSI_RED + ticket.getMessage() + AnsiColors.ANSI_RESET);
-                    ticket.setUpdated(false);
-                }
-            }
-        }
-
-        removed.forEach(ticket -> {
-            if (ticket.isRemoved()) {
-                tickets.removeTicket(ticket);
-            }
-        });
     }
 
     /**
@@ -484,7 +441,7 @@ public class PassengerActions {
      * @param passenger active passenger
      */
     public void addingCharge(Passenger passenger) {
-        int currentCharge = passenger.getCharge();
+        int currentCharge = passengers.findInFile(passenger.getUsername()).getCharge();
         System.out.printf("$ Current Charge : %,d%n", currentCharge);
 
         int addedCharge;
@@ -499,9 +456,9 @@ public class PassengerActions {
         }
 
         Console.pauseProgram();
-        passenger.setCharge(currentCharge + addedCharge);
+        passengers.updateFile(passenger.getUsername(), 3, String.valueOf(currentCharge + addedCharge));
         System.out.println(AnsiColors.ANSI_GREEN + ">> Charge successfully added ! <<" + AnsiColors.ANSI_RESET);
-        System.out.printf("$ Current charge : %,d%n", passenger.getCharge());
+        System.out.printf("$ Current charge : %,d%n", passengers.findInFile(passenger.getUsername()).getCharge());
         Console.pressKey();
     }
 }

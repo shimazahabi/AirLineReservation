@@ -1,6 +1,8 @@
 package datamanager;
 
+import data.Admin;
 import data.Flight;
+import data.Ticket;
 import utils.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,7 +70,7 @@ public class AdminActions {
         int seats = seatsValidation();
 
         Console.pauseProgram();
-        flights.addFlight(flightId, origin, destination, date, time, price, seats);
+        flights.addToFile(new Flight(flightId, origin, destination, date, time, price, seats, false));
         System.out.println(AnsiColors.ANSI_GREEN + "\n>> Flight is successfully added ! <<\n" + AnsiColors.ANSI_RESET);
         Console.pressKey();
     }
@@ -91,59 +93,55 @@ public class AdminActions {
      * This method is for updating flights.
      */
     public void updatingFlight() {
-        Flight flight = searchFlightId();
+        String flightId = searchFlightId();
 
         int option;
         do {
-            printFields(flight);
+            printFields(flightId);
             System.out.print("- Choose A Field : ");
             int fieldNum = Console.checkInt();
             String update1;
             int update2;
 
-            if (fieldNum >= 1 && fieldNum <= 7) {
-                tickets.updateTicketsMessage(flight);
-            }
-
             switch (fieldNum) {
                 case 1 -> {
                     System.out.print("- Update Flight Id : ");
                     update1 = flightIdValidation();
-                    flight.setFlightId(update1);
+                    flights.updateFile(flightId, 1, update1);
                 }
                 case 2 -> {
                     System.out.print("- Update Origin : ");
                     update1 = cityValidation();
-                    flight.setOrigin(update1);
+                    flights.updateFile(flightId, 2, update1);
                 }
                 case 3 -> {
                     System.out.print("- Update Destination : ");
                     update1 = cityValidation();
-                    flight.setDestination(update1);
+                    flights.updateFile(flightId, 3, update1);
                 }
                 case 4 -> {
                     System.out.print("- Update Date : ");
                     update1 = dateValidation();
-                    flight.setDate(update1);
+                    flights.updateFile(flightId, 4, update1);
                 }
                 case 5 -> {
                     System.out.print("- Update Time : ");
                     update1 = timeValidation();
-                    flight.setTime(update1);
+                    flights.updateFile(flightId, 5, update1);
                 }
                 case 6 -> {
-                    if (flight.isBooked()) {
+                    if (flights.findInFile(flightId).isBooked()) {
                         System.out.println(AnsiColors.ANSI_RED + "* You can't change the price, because this flight is booked by passengers !" + AnsiColors.ANSI_RESET);
                     } else {
                         System.out.print("- Update Price : ");
                         update2 = priceValidation();
-                        flight.setPrice(update2);
+                        flights.updateFile(flightId, 6, String.valueOf(update2));
                     }
                 }
                 case 7 -> {
                     System.out.print("- Update Seats : ");
                     update2 = seatsValidation();
-                    flight.setSeats(update2);
+                    flights.updateFile(flightId, 7, String.valueOf(update2));
                 }
                 case -1 -> {
                     System.out.println(AnsiColors.ANSI_RED + "* Attention => You can only enter numbers ! *" + AnsiColors.ANSI_RESET);
@@ -177,11 +175,9 @@ public class AdminActions {
         Console.pressKey();
     }
 
-    /**
-     * This method prints the flight details and fields in order to be updated.
-     * @param flight chosen flight
-     */
-    public void printFields(Flight flight) {
+    public void printFields(String flightId) {
+        Flight flight = flights.findInFile(flightId);
+
         System.out.printf(AnsiColors.ANSI_PURPLE + """
                                         
                         ( 1 ) Flight Id : %s
@@ -220,7 +216,7 @@ public class AdminActions {
      * This method is for removing flights.
      */
     public void removingFlight() {
-        Flight flight = searchFlightId();
+        String flightId = searchFlightId();
 
         Console.pauseProgram();
         System.out.print(AnsiColors.ANSI_PURPLE + """
@@ -234,8 +230,7 @@ public class AdminActions {
             Console.pauseProgram();
 
             if (answer.equals("y")) {
-                tickets.removingTicketsMessage(flight);
-                flights.removeFlight(flight);
+                flights.removeFromFile(flightId);
                 System.out.println(AnsiColors.ANSI_GREEN + ">> Flight is successfully removed ! <<\n" + AnsiColors.ANSI_RESET);
                 break;
             } else if (answer.equals("n")) {
@@ -252,16 +247,16 @@ public class AdminActions {
      * This method is for searching flight id.
      * @return the found flight
      */
-    public Flight searchFlightId() {
+    public String searchFlightId() {
         while (true) {
             System.out.print("- Flight Id : ");
             String flightId = input.nextLine();
 
-            Flight flight = flights.findFlight(flightId);
+            Flight flight = flights.findInFile(flightId);
             if (flight == null) {
                 System.out.println(AnsiColors.ANSI_RED + "Chosen flight doesn't exist ! Try Again !" + AnsiColors.ANSI_RESET);
             } else {
-                return flight;
+                return flightId;
             }
         }
     }
@@ -279,7 +274,7 @@ public class AdminActions {
                         (Correct Format => [a-zA-Z]*2 - [0-9]*2)
                         (Example => SA-18)
                         Try Again :\s""" + AnsiColors.ANSI_RESET);
-            } else if (flights.findFlight(flightId) != null) {
+            } else if (flights.findInFile(flightId) != null) {
                 System.out.println(AnsiColors.ANSI_RED + """
                         ** Flight Id already exists !
                         Try Again :\s""" + AnsiColors.ANSI_RESET);
@@ -415,7 +410,7 @@ public class AdminActions {
                 +=====================================================================================+
                 """, "Flight Id", "Origin", "Destination", "Date", "Time", "Price", "Seats");
 
-        flights.getFlights().forEach(System.out::print);
+        flights.printFlights();
         System.out.print(AnsiColors.ANSI_RESET);
     }
 }

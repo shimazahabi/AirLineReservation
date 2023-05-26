@@ -1,68 +1,69 @@
 package datamanager;
 
 import data.Flight;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 /**
  * This class is for saving all the flights.
  */
-public class Flights {
-    private final ArrayList<Flight> flights = new ArrayList<>();
+public class Flights extends DataHolder<Flight> {
 
-    public Flights() { }
-
-    public ArrayList<Flight> getFlights() { return flights; }
-
-    public void addFlight(String flightId, String origin, String destination, String date, String time, int price, int seats) {
-        flights.add(new Flight(flightId, origin, destination, date, time, price, seats));
+    public Flights(Flight flight, String filePath, int recordBytesNum, int featuresNum) {
+        super(flight, filePath, recordBytesNum, featuresNum);
     }
 
-    public void removeFlight(Flight flight) { flights.remove(flight); }
-
-    /**
-     * This method is for calculating the matching score of the searched flight.
-     * @param matchScores this array saves the matching score of all the flights.
-     * @param flightIndex this array saves the index of the flights.
-     */
-    public void calculateMatchScores(int[] matchScores, int[] flightIndex, String flightId, String origin, String destination, String date, String time, int start, int end) {
-        int size = flights.size();
+    public ArrayList<Flight> calculateMatchScores(int[] matchScores, String flightId, String origin, String destination, String date, String time, int start, int end) throws IOException {
+        ArrayList<Flight> foundFlights = new ArrayList<>();
+        openFile();
         int matchScore;
-        for (int i = 0; i < size; i++) {
-            Flight flight = flights.get(i);
+        for (int i = 0; i < (file.length() / recordBytesNum); i++) {
+            String[] str = new String[8];
+            for (int j = 0; j < featuresNum; j++) {
+                str[j] = readFixString();
+            }
             matchScore = 0;
-            if (flightId.matches("(?i)" + flight.getFlightId() + "(?-i)")) {
+            if (flightId.matches("(?i)" + str[0] + "(?-i)")) {
                 matchScore++;
             }
-            if (origin.matches("(?i)" + flight.getOrigin() + "(?-i)")) {
+            if (origin.matches("(?i)" + str[1] + "(?-i)")) {
                 matchScore++;
             }
-            if (destination.matches("(?i)" + flight.getDestination() + "(?-i)")) {
+            if (destination.matches("(?i)" + str[2] + "(?-i)")) {
                 matchScore++;
             }
-            if (date.equals(flight.getDate())) {
+            if (date.equals(str[3])) {
                 matchScore++;
             }
-            if (time.equals(flight.getTime())) {
+            if (time.equals(str[4])) {
                 matchScore++;
             }
-            if (start < flight.getPrice() && flight.getPrice() < end) {
+            if (start < t.stringToInt(str[5]) && t.stringToInt(str[5]) < end) {
                 matchScore++;
             }
             matchScores[i] = matchScore;
-            flightIndex[i] = i;
+            foundFlights.add((Flight) t.separateRecord(str));
         }
+        closeFile();
+        return foundFlights;
     }
 
-    /**
-     * This method is for finding the flight by flight id.
-     * @return the found flight
-     */
-    public Flight findFlight(String flightId) {
-        for (Flight flight : flights) {
-            if (flightId.equals(flight.getFlightId())){
-                return flight;
+    public void printFlights() {
+        String[] str = new String[featuresNum];
+        try {
+            openFile();
+            for (int i = 0; i < (file.length() / recordBytesNum); i++) {
+                for (int j = 0; j < featuresNum; j++) {
+                    str[j] = readFixString();
+                }
+                System.out.print(t.separateRecord(str));
             }
+            closeFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 }

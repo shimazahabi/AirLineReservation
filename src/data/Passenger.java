@@ -6,8 +6,9 @@ package data;
 public class Passenger extends BaseUser {
     private int charge;
 
-    public Passenger(String username, String password) {
+    public Passenger(String username, String password, int charge) {
         super(username, password);
+        this.charge = charge;
     }
 
     public int getCharge() {
@@ -16,5 +17,15 @@ public class Passenger extends BaseUser {
 
     public void setCharge(int charge) {
         this.charge = charge;
+    }
+
+    @Override
+    public String generate() {
+        return fixString(getUsername()) + fixString(getPassword()) + fixString(intToString(charge));
+    }
+
+    @Override
+    public Passenger separateRecord(String[] str) {
+        return new Passenger(str[0], str[1], stringToInt(str[2]));
     }
 }

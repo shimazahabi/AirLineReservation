@@ -1,61 +1,60 @@
 package data;
 
+import datamanager.WritableReadable;
+
 /**
  * This class is for the ticket details. (Including flight, passenger, ticketId, message, removed, updated)
  */
-public class Ticket {
-    private final Flight flight;
-    private final Passenger passenger;
-    private final String ticketId;
-    private String message;
-    private boolean removed, updated;
+public class Ticket implements WritableReadable {
+    private String username;
+    private String flightId;
+    private String ticketId;
 
-    public Ticket(Flight flight, Passenger passenger, String ticketId) {
-        this.flight = flight;
-        this.passenger = passenger;
+    public Ticket(String ticketId, String username, String flightId) {
         this.ticketId = ticketId;
+        this.username = username;
+        this.flightId = flightId;
     }
 
-    public Flight getFlight() {
-        return flight;
+    public String getUsername() {
+        return username;
     }
 
-    public Passenger getPassenger() { return passenger; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFlightId() {
+        return flightId;
+    }
+
+    public void setFlightId(String flightId) {
+        this.flightId = flightId;
+    }
 
     public String getTicketId() {
         return ticketId;
     }
 
-    public String getMessage() {
-        return message;
+    public void setTicketId(String ticketId) {
+        this.ticketId = ticketId;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public boolean isRemoved() {
-        return removed;
-    }
-
-    public void setRemoved(boolean removed) {
-        this.removed = removed;
-    }
-
-    public boolean isUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(boolean updated) {
-        this.updated = updated;
+    public String toString(Flight flight) {
+        return String.format("""
+               | %-10s | %-10s | %-10s | %-13s | %-10s | %-6s | %,-10d | %-6d |
+               +--------------------------------------------------------------------------------------------------+
+               """, ticketId, flight.getFlightId(), flight.getOrigin(), flight.getDestination(),
+                flight.getDate(), flight.getTime(), flight.getPrice(), flight.getSeats());
     }
 
     @Override
-    public String toString() {
-        return String.format("""
-                | %-10s | %-10s | %-10s | %-13s | %-10s | %-6s | %,-10d | %-6d |
-                +--------------------------------------------------------------------------------------------------+
-                """, ticketId, flight.getFlightId(), flight.getOrigin(), flight.getDestination(),
-                flight.getDate(), flight.getTime(), flight.getPrice(), flight.getSeats());
+    public String generate() {
+        return fixString(ticketId) + fixString(username) + fixString(flightId);
+    }
+
+    @Override
+    public Ticket separateRecord(String[] str) {
+        return new Ticket(str[0], str[1], str[2]);
     }
 }

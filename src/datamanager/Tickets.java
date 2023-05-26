@@ -1,74 +1,44 @@
 package datamanager;
 
 import data.*;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 /**
  * This class for saving all the tickets.
  */
-public class Tickets {
-    private final ArrayList<Ticket> tickets = new ArrayList<>();
-    private static int idCounter = 1000;
+public class Tickets extends DataHolder<Ticket> {
+    public static int idCounter = 1000;
 
-    public Tickets() { }
-
-    public ArrayList<Ticket> getTickets() {
-        return tickets;
+    public Tickets(Ticket ticket, String filePath, int recordBytesNum, int featuresNum) {
+        super(ticket, filePath, recordBytesNum, featuresNum);
     }
 
-    public String addTicket(Flight flight, Passenger passenger) {
+    public String ticketIdGenerator(String flightId) {
         idCounter++;
-        String ticketId = String.format("%s-%d", flight.getFlightId(), idCounter);
-        tickets.add(new Ticket(flight, passenger, ticketId));
-        return ticketId;
+        return String.format("%s-%d", flightId, idCounter);
     }
 
-    public void removeTicket(Ticket ticket) {
-        tickets.remove(ticket);
-    }
-
-    /**
-     * This method is for setting the message when updating a flight.
-     */
-    public void updateTicketsMessage(Flight flight) {
-        tickets.forEach(ticket -> {
-            if (flight.equals(ticket.getFlight())) {
-                ticket.setUpdated(true);
-                ticket.setMessage("* Flight with flight Id : " + flight.getFlightId()
-                        + " From : " + flight.getOrigin()
-                        + " To : " + flight.getDestination()
-                        + " is updated !"
-                );
+    public ArrayList<Ticket> bookedTickets(String username) {
+        ArrayList<Ticket> foundTickets = new ArrayList<>();
+        try {
+            openFile();
+            for (int i = 0; i < (file.length() / recordBytesNum); i++) {
+                String[] str = new String[featuresNum];
+                for (int j = 0; j < featuresNum; j++) {
+                    str[j] = readFixString();
+                }
+                if (username.matches(str[1])) {
+                    foundTickets.add((Ticket) t.separateRecord(str));
+                }
             }
-        });
-    }
-
-    /**
-     * This method is for setting the message when removing a flight.
-     */
-    public void removingTicketsMessage(Flight flight) {
-        tickets.forEach(ticket -> {
-            if (flight.equals(ticket.getFlight())) {
-                ticket.setRemoved(true);
-                ticket.setMessage("* Flight with flight Id : " + flight.getFlightId()
-                        + " From : " + flight.getOrigin()
-                        + " To : " + flight.getDestination()
-                        + " is removed !"
-                );
-            }
-        });
-    }
-
-    /**
-     * This method is for finding ticket using the ticket id.
-     * @return the found ticket
-     */
-    public Ticket findTicket(String ticketId) {
-        for (Ticket ticket : tickets) {
-            if (ticketId.equals(ticket.getTicketId())) {
-                return ticket;
-            }
+            closeFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return null;
+        return foundTickets;
     }
 }

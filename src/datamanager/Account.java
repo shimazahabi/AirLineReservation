@@ -10,11 +10,13 @@ import java.util.Scanner;
  */
 public class Account {
     private final Scanner input;
-    private final Users users;
+    private final DataHolder<Admin> admins;
+    private final DataHolder<Passenger> passengers;
 
-    public Account(Scanner input, Users users) {
+    public Account(Scanner input, DataHolder<Admin> admins, DataHolder<Passenger> passengers) {
         this.input = input;
-        this.users = users;
+        this.admins = admins;
+        this.passengers = passengers;
     }
 
     /**
@@ -48,9 +50,9 @@ public class Account {
         Console.pauseProgram();
 
         if (user.equals("passenger")) {
-            users.addPassenger(username, password);
+            passengers.addToFile(new Passenger(username, password, 0));
         } else if (user.equals("admin")) {
-            users.addAdmin(username, password);
+            admins.addToFile(new Admin(username, password));
         }
         return username;
     }
@@ -67,7 +69,7 @@ public class Account {
                 username = input.nextLine();
             } while (!usernameRequirements(username));
 
-            if (users.findPassenger(username) != null || users.findAdmin(username) != null) {
+            if (passengers.findInFile(username) != null || admins.findInFile(username) != null) {
                 System.out.println(AnsiColors.ANSI_RED + "* Username is already taken ! Try another username :)\n" + AnsiColors.ANSI_RESET);
             } else {
                 System.out.println(AnsiColors.ANSI_GREEN + "~ Username accepted !" + AnsiColors.ANSI_RESET);
@@ -157,8 +159,8 @@ public class Account {
             System.out.print("{ Username } : ");
             username = input.nextLine();
 
-            Passenger passenger = users.findPassenger(username);
-            Admin admin = users.findAdmin(username);
+            Passenger passenger = passengers.findInFile(username);
+            Admin admin = admins.findInFile(username);
             if (passenger != null) {
                 matchPassword(username, "passenger");
                 return username;
@@ -183,13 +185,13 @@ public class Account {
             password = input.nextLine();
 
             if (user.equals("passenger")) {
-                if (password.equals(users.findPassenger(username).getPassword())) {
+                if (password.equals(passengers.findInFile(username).getPassword())) {
                     return;
                 } else {
                     System.out.println(AnsiColors.ANSI_RED + "* INCORRECT PASSWORD ! Try Again !\n" + AnsiColors.ANSI_RESET);
                 }
             } else if (user.equals("admin")) {
-                if (password.equals(users.findAdmin(username).getPassword())) {
+                if (password.equals(admins.findInFile(username).getPassword())) {
                     return;
                 } else {
                     System.out.println(AnsiColors.ANSI_RED + "* INCORRECT PASSWORD ! Try Again !\n" + AnsiColors.ANSI_RESET);
