@@ -253,6 +253,7 @@ public class Account {
         }
 
         Console.pauseProgram();
+        passengers.updateFile(passenger.getUsername(), 2, password);
         passenger.setPassword(password);
         System.out.println(AnsiColors.ANSI_GREEN + "Password successfully changed !" + AnsiColors.ANSI_RESET);
         Console.pressKey();

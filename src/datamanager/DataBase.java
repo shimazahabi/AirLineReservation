@@ -18,57 +18,17 @@ public class DataBase {
     Tickets tickets = new Tickets(new Ticket("", "", ""), "Tickets.dat",180, 3);
 
     private final Account account = new Account(input, admins, passengers);
-    private final AdminActions adminActions = new AdminActions(input, flights, tickets);
+    private final AdminActions adminActions = new AdminActions(input, flights);
     private final AdminMenu adminMenu = new AdminMenu(adminActions, account, input, 5);
     private final PassengerActions passengerActions = new PassengerActions(input, passengers, flights, tickets);
     private final PassengerMenu passengerMenu = new PassengerMenu(passengerActions, account, input, 6);
-
-    public Scanner getInput() {
-        return input;
-    }
-
-    public void setInput(Scanner input) {
-        this.input = input;
-    }
 
     public DataHolder<Admin> getAdmins() {
         return admins;
     }
 
-    public void setAdmins(DataHolder<Admin> admins) {
-        this.admins = admins;
-    }
-
     public DataHolder<Passenger> getPassengers() {
         return passengers;
-    }
-
-    public void setPassengers(DataHolder<Passenger> passengers) {
-        this.passengers = passengers;
-    }
-
-    public Flights getFlights() {
-        return flights;
-    }
-
-    public void setFlights(Flights flights) {
-        this.flights = flights;
-    }
-
-    public Tickets getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(Tickets tickets) {
-        this.tickets = tickets;
-    }
-
-    public AdminActions getAdminActions() {
-        return adminActions;
-    }
-
-    public PassengerActions getPassengerActions() {
-        return passengerActions;
     }
 
     public Account getAccount() {

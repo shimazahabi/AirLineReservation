@@ -1,8 +1,16 @@
 package datamanager;
 
+/**
+ * This interface includes the writable-readable actions.
+ * @param <E>
+ */
 public interface WritableReadable<E> {
     int STRING_FIXED_SIZE = 30;
 
+    /**
+     * This method generates a writable record.
+     * @return string of the record
+     */
     String generate();
 
     default String intToString(int i) {
@@ -21,11 +29,21 @@ public interface WritableReadable<E> {
         return Boolean.parseBoolean(str);
     }
 
+    /**
+     * This method fixes a string.
+     * @param str
+     * @return fixed string
+     */
     default String fixString(String str) {
         while (str.length() < STRING_FIXED_SIZE)
             str += " ";
         return str.substring(0, STRING_FIXED_SIZE);
     }
 
+    /**
+     * This method separates a record (in string format) into different fields.
+     * @param str the string of the record
+     * @return the record
+     */
     E separateRecord(String[] str);
 }

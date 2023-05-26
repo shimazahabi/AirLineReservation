@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is for saving all the flights.
@@ -16,7 +17,11 @@ public class Flights extends DataHolder<Flight> {
         super(flight, filePath, recordBytesNum, featuresNum);
     }
 
-    public ArrayList<Flight> calculateMatchScores(int[] matchScores, String flightId, String origin, String destination, String date, String time, int start, int end) throws IOException {
+    /**
+     * This method calculates the matching score of the available flights with the searched flight.
+     * @return an arraylist of the found flights
+     */
+    public ArrayList<Flight> calculateMatchScores(List<Integer> matchScores, String flightId, String origin, String destination, String date, String time, int start, int end) throws IOException {
         ArrayList<Flight> foundFlights = new ArrayList<>();
         openFile();
         int matchScore;
@@ -44,13 +49,16 @@ public class Flights extends DataHolder<Flight> {
             if (start < t.stringToInt(str[5]) && t.stringToInt(str[5]) < end) {
                 matchScore++;
             }
-            matchScores[i] = matchScore;
-            foundFlights.add((Flight) t.separateRecord(str));
+            matchScores.add(matchScore);
+            foundFlights.add(t.separateRecord(str));
         }
         closeFile();
         return foundFlights;
     }
 
+    /**
+     * This method prints all the  flights.
+     */
     public void printFlights() {
         String[] str = new String[featuresNum];
         try {

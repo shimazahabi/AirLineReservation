@@ -5,6 +5,7 @@ import utils.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PassengerActions {
@@ -114,14 +115,8 @@ public class PassengerActions {
             }
         } while (option != 2);
 
-        long size;
-        try {
-            size = flights.file.length() / flights.recordBytesNum;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        int[] matchScores = new int[(int) size];
-        ArrayList<Flight> foundFlights = new ArrayList<>();
+        List<Integer> matchScores = new ArrayList<>();
+        List<Flight> foundFlights;
 
         try {
             foundFlights = flights.calculateMatchScores(matchScores, flightId, origin, destination, date, time, startPriceRange, endPriceRange);
@@ -138,14 +133,14 @@ public class PassengerActions {
         Console.pressKey();
     }
 
-    public void sortArrays(int[] matchScores, ArrayList<Flight> foundFlights) {
-        int size = matchScores.length;
+    public void sortArrays(List<Integer> matchScores, List<Flight> foundFlights) {
+        int size = matchScores.size();
         for (int i = 0; i < size; i++) {
             for (int j = i + 1; j < size; j++) {
-                if (matchScores[i] > matchScores[j]) {
-                    int temp = matchScores[i];
-                    matchScores[i] = matchScores[j];
-                    matchScores[j] = temp;
+                if (matchScores.get(i) > matchScores.get(j)) {
+                    int temp = matchScores.get(i);
+                    matchScores.set(i, matchScores.get(j));
+                    matchScores.set(j, temp);
 
                     Flight tempFlight;
                     tempFlight = foundFlights.get(i);
@@ -161,7 +156,7 @@ public class PassengerActions {
      * @param matchScores the array that saves the matching score of the flights.
      * @return true if any flight matches the searched flight.
      */
-    public boolean searchedFlightExist(int[] matchScores) {
+    public boolean searchedFlightExist(List<Integer> matchScores) {
         for (int matchScore : matchScores) {
             if (matchScore > 0) {
                 return true;
@@ -170,22 +165,22 @@ public class PassengerActions {
         return false;
     }
 
-    public void printSearchedFlights(int[] matchScores, ArrayList<Flight> foundFlights) {
+    public void printSearchedFlights(List<Integer> matchScores, List<Flight> foundFlights) {
         System.out.printf(AnsiColors.ANSI_CYAN + """
                 +======================================================================================================+
                 ║ %-14s ║ %-10s ║ %-10s ║ %-13s ║ %-10s ║ %-6s ║ %-10s ║ %-6s ║
                 +======================================================================================================+
                 """, "Matching Score", "Flight Id", "Origin", "Destination", "Date", "Time", "Price", "Seats");
 
-        int size = matchScores.length;
+        int size = matchScores.size();
         for (int i = size - 1; i >= 0; i--) {
             Flight flight = foundFlights.get(i);
-            if (matchScores[i] > 0) {
+            if (matchScores.get(i) > 0) {
                 System.out.printf("""
                                 | %-14d | %-10s | %-10s | %-13s | %-10s | %-6s | %,-10d | %-6d |
                                 +------------------------------------------------------------------------------------------------------+
                                 """,
-                        matchScores[i], flight.getFlightId(), flight.getOrigin(),
+                        matchScores.get(i), flight.getFlightId(), flight.getOrigin(),
                         flight.getDestination(), flight.getDate(), flight.getTime(),
                         flight.getPrice(), flight.getSeats());
             }
@@ -397,7 +392,7 @@ public class PassengerActions {
                     
                 """ + AnsiColors.ANSI_RESET);
 
-        ArrayList<Ticket> foundTickets = new ArrayList<>();
+        List<Ticket> foundTickets;
         foundTickets = tickets.bookedTickets(passenger.getUsername());
 
         if (foundTickets.size() > 0) {
@@ -408,7 +403,7 @@ public class PassengerActions {
         Console.pressKey();
     }
 
-    public void printBookedTicket(ArrayList<Ticket> foundTickets) {
+    public void printBookedTicket(List<Ticket> foundTickets) {
         System.out.printf(AnsiColors.ANSI_CYAN + """
                 +--------------------------------------------------------------------------------------------------+
                 | %-10s | %-10s | %-10s | %-13s | %-10s | %-6s | %-10s | %-6s |

@@ -14,12 +14,10 @@ import java.util.*;
 public class AdminActions {
     private final Scanner input;
     private final Flights flights;
-    private final Tickets tickets;
 
-    public AdminActions(Scanner input, Flights flights, Tickets tickets) {
+    public AdminActions(Scanner input, Flights flights) {
         this.input = input;
         this.flights = flights;
-        this.tickets = tickets;
     }
 
     /**
@@ -105,31 +103,26 @@ public class AdminActions {
 
             switch (fieldNum) {
                 case 1 -> {
-                    System.out.print("- Update Flight Id : ");
-                    update1 = flightIdValidation();
-                    flights.updateFile(flightId, 1, update1);
-                }
-                case 2 -> {
                     System.out.print("- Update Origin : ");
                     update1 = cityValidation();
                     flights.updateFile(flightId, 2, update1);
                 }
-                case 3 -> {
+                case 2 -> {
                     System.out.print("- Update Destination : ");
                     update1 = cityValidation();
                     flights.updateFile(flightId, 3, update1);
                 }
-                case 4 -> {
+                case 3 -> {
                     System.out.print("- Update Date : ");
                     update1 = dateValidation();
                     flights.updateFile(flightId, 4, update1);
                 }
-                case 5 -> {
+                case 4 -> {
                     System.out.print("- Update Time : ");
                     update1 = timeValidation();
                     flights.updateFile(flightId, 5, update1);
                 }
-                case 6 -> {
+                case 5 -> {
                     if (flights.findInFile(flightId).isBooked()) {
                         System.out.println(AnsiColors.ANSI_RED + "* You can't change the price, because this flight is booked by passengers !" + AnsiColors.ANSI_RESET);
                     } else {
@@ -138,7 +131,7 @@ public class AdminActions {
                         flights.updateFile(flightId, 6, String.valueOf(update2));
                     }
                 }
-                case 7 -> {
+                case 6 -> {
                     System.out.print("- Update Seats : ");
                     update2 = seatsValidation();
                     flights.updateFile(flightId, 7, String.valueOf(update2));
@@ -180,13 +173,13 @@ public class AdminActions {
 
         System.out.printf(AnsiColors.ANSI_PURPLE + """
                                         
-                        ( 1 ) Flight Id : %s
-                        ( 2 ) Origin : %s
-                        ( 3 ) Destination : %s
-                        ( 4 ) Date : %s
-                        ( 5 ) Time : %s
-                        ( 6 ) Price : %,d
-                        ( 7 ) Seats : %d
+                        { * } Flight Id : %s
+                        ( 1 ) Origin : %s
+                        ( 2 ) Destination : %s
+                        ( 3 ) Date : %s
+                        ( 4 ) Time : %s
+                        ( 5 ) Price : %,d
+                        ( 6 ) Seats : %d
                                         
                         """ + AnsiColors.ANSI_RESET,
                 flight.getFlightId(),

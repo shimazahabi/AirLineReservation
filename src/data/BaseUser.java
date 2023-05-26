@@ -5,7 +5,7 @@ import datamanager.WritableReadable;
 /**
  * BaseUser is the parent class of user classes.
  */
-public abstract class BaseUser implements WritableReadable {
+public abstract class BaseUser implements WritableReadable<BaseUser> {
     private String username;
     private String password;
 
@@ -16,10 +16,6 @@ public abstract class BaseUser implements WritableReadable {
 
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {

@@ -15,10 +15,6 @@ public class Passenger extends BaseUser {
         return charge;
     }
 
-    public void setCharge(int charge) {
-        this.charge = charge;
-    }
-
     @Override
     public String generate() {
         return fixString(getUsername()) + fixString(getPassword()) + fixString(intToString(charge));

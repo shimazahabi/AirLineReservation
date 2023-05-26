@@ -2,9 +2,7 @@ package datamanager;
 
 import data.*;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 /**
@@ -17,11 +15,21 @@ public class Tickets extends DataHolder<Ticket> {
         super(ticket, filePath, recordBytesNum, featuresNum);
     }
 
+    /**
+     * This method generates a unique ticket id.
+     * @param flightId of the booked flight
+     * @return generated ticket id
+     */
     public String ticketIdGenerator(String flightId) {
         idCounter++;
         return String.format("%s-%d", flightId, idCounter);
     }
 
+    /**
+     * This method finds the booked tickets of a passenger.
+     * @param username of the passenger
+     * @return an arraylist of the found thickets
+     */
     public ArrayList<Ticket> bookedTickets(String username) {
         ArrayList<Ticket> foundTickets = new ArrayList<>();
         try {
@@ -32,7 +40,7 @@ public class Tickets extends DataHolder<Ticket> {
                     str[j] = readFixString();
                 }
                 if (username.matches(str[1])) {
-                    foundTickets.add((Ticket) t.separateRecord(str));
+                    foundTickets.add(t.separateRecord(str));
                 }
             }
             closeFile();

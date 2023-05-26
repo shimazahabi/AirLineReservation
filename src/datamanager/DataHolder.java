@@ -1,12 +1,13 @@
 package datamanager;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
+/**
+ * This is a generic class that includes all the methods that are needed to work with RandomAccessFile.
+ * @param <T>
+ */
 public class DataHolder<T extends WritableReadable> {
     protected T t;
     protected String filePath;
@@ -27,6 +28,9 @@ public class DataHolder<T extends WritableReadable> {
         check();
     }
 
+    /**
+     * This method checks weather the file exists or not.
+     */
     public void check() {
         File file1 = new File(filePath);
         if (!file1.exists()) {
@@ -39,14 +43,23 @@ public class DataHolder<T extends WritableReadable> {
         }
     }
 
+    /**
+     * This method opens the file.
+     */
     public void openFile() throws FileNotFoundException {
         file = new RandomAccessFile(filePath, "rw");
     }
 
+    /**
+     * This method closes the file.
+     */
     public void closeFile() throws IOException {
         file.close();
     }
 
+    /**
+     * This method adds data to the file.
+     */
     public void addToFile(T t) {
         try {
             openFile();
@@ -59,62 +72,11 @@ public class DataHolder<T extends WritableReadable> {
         }
     }
 
-    public void removeFromFile(String keyWord) {
-        try {
-            openFile();
-            RandomAccessFile tempFile = new RandomAccessFile( "data.dat", "rw");
-            for (int i = 0; i < (file.length() / recordBytesNum); i++) {
-                String str = readFixString();
-                if (!keyWord.equals(str)) {
-                    str = wholeRecord(str);
-                    tempFile.writeChars(str);
-                } else {
-                    file.skipBytes(recordBytesNum - (t.STRING_FIXED_SIZE  * 2));
-                }
-            }
-            closeFile();
-            tempFile.close();
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-
-        Path tmp = Paths.get("data.dat");
-        Path previous = Paths.get(filePath);
-        try {
-            Files.move(tmp, previous, REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-//        File tmp = new File("data.dat");
-//        System.out.println(tmp.delete());
-//////        System.out.println(tmp.exists());
-////        File previous = new File(filePath);
-//////        System.out.println(previous.exists());
-////        System.out.println(tmp.getPath());
-////        System.out.println(tmp.renameTo(previous));
-    }
-
-    public void updateFile(String keyWord, int fieldNum, String replacement) {
-        try {
-            openFile();
-            for (int i = 0; i < (file.length() / recordBytesNum); i++) {
-                String str = readFixString();
-                if (keyWord.equals(str)) {
-                    file.skipBytes((fieldNum - 2) * (t.STRING_FIXED_SIZE * 2));
-                    file.writeChars(t.fixString(replacement));
-                    break;
-                } else {
-                    file.skipBytes(recordBytesNum - (t.STRING_FIXED_SIZE  * 2));
-                }
-            }
-            closeFile();
-        } catch (IOException e) {
-            System.err.println("File couldn't be updated !");
-            throw new RuntimeException(e);
-        }
-    }
-
+    /**
+     * This method finds the record in the file.
+     * @param keyWord of the record
+     * @return founded record
+     */
     public T findInFile(String keyWord) {
         try {
             openFile();
@@ -137,6 +99,67 @@ public class DataHolder<T extends WritableReadable> {
         return null;
     }
 
+    /**
+     * This method updates data in the file.
+     * @param keyWord of the record
+     * @param fieldNum the updated field number
+     * @param replacement of the updated field
+     */
+    public void updateFile(String keyWord, int fieldNum, String replacement) {
+        try {
+            openFile();
+            for (int i = 0; i < (file.length() / recordBytesNum); i++) {
+                String str = readFixString();
+                if (keyWord.equals(str)) {
+                    file.skipBytes((fieldNum - 2) * (t.STRING_FIXED_SIZE * 2));
+                    file.writeChars(t.fixString(replacement));
+                    break;
+                } else {
+                    file.skipBytes(recordBytesNum - (t.STRING_FIXED_SIZE  * 2));
+                }
+            }
+            closeFile();
+        } catch (IOException e) {
+            System.err.println("File couldn't be updated !");
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * This method removes data from the file.
+     * @param keyWord of the record
+     */
+    public void removeFromFile(String keyWord) {
+        try {
+            openFile();
+            List<String> records = new ArrayList<>();
+            for (int i = 0; i < (file.length() / recordBytesNum); i++) {
+                String str = readFixString();
+                if (!keyWord.equals(str)) {
+                    str = wholeRecord(str);
+                    records.add(str);
+                } else {
+                    file.skipBytes(recordBytesNum - (t.STRING_FIXED_SIZE  * 2));
+                }
+            }
+
+            file.seek(0);
+            for (int i = 0; i < records.size(); i++) {
+                file.writeChars(records.get(i));
+            }
+
+            long newLength = file.length() - recordBytesNum;
+            file.setLength(newLength);
+            closeFile();
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+
+    /**
+     * This method reads a fix string from the file.
+     * @return the trimmed string
+     */
     public String readFixString() {
         String tmp = "";
         try {
@@ -149,6 +172,11 @@ public class DataHolder<T extends WritableReadable> {
         return tmp.trim();
     }
 
+    /**
+     * This method makes the whole record in one string.
+     * @param str the first field
+     * @return the whole record
+     */
     public String wholeRecord(String str) {
         String tmp = t.fixString(str);
         try {
