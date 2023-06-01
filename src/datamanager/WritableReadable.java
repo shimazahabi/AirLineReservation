@@ -6,12 +6,19 @@ package datamanager;
  */
 public interface WritableReadable<E> {
     int STRING_FIXED_SIZE = 30;
+    int INDEX_SIZE = 68;
 
     /**
      * This method generates a writable record.
      * @return string of the record
      */
     String generate();
+
+    /**
+     * This method is for separating the keyWord.
+     * @return the keyWord.
+     */
+    String keyWord();
 
     default String intToString(int i) {
         return Integer.toString(i);

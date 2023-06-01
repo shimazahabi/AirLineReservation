@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class Flights extends DataHolder<Flight> {
 
-    public Flights(Flight flight, String filePath, int recordBytesNum, int featuresNum) {
-        super(flight, filePath, recordBytesNum, featuresNum);
+    public Flights(Flight flight, String filePath, String fileIndexPath, int recordBytesNum, int featuresNum) {
+        super(flight, filePath, fileIndexPath, recordBytesNum, featuresNum);
     }
 
     /**
@@ -28,7 +28,7 @@ public class Flights extends DataHolder<Flight> {
         for (int i = 0; i < (file.length() / recordBytesNum); i++) {
             String[] str = new String[8];
             for (int j = 0; j < featuresNum; j++) {
-                str[j] = readFixString();
+                str[j] = readFixString(file);
             }
             matchScore = 0;
             if (flightId.matches("(?i)" + str[0] + "(?-i)")) {
@@ -65,7 +65,7 @@ public class Flights extends DataHolder<Flight> {
             openFile();
             for (int i = 0; i < (file.length() / recordBytesNum); i++) {
                 for (int j = 0; j < featuresNum; j++) {
-                    str[j] = readFixString();
+                    str[j] = readFixString(file);
                 }
                 System.out.print(t.separateRecord(str));
             }

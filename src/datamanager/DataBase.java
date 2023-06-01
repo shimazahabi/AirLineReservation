@@ -12,10 +12,10 @@ import java.util.Scanner;
  */
 public class DataBase {
     Scanner input = new Scanner(System.in);
-    DataHolder<Admin> admins = new DataHolder<>(new Admin("",""),"Admins.dat",120, 2);
-    DataHolder<Passenger> passengers = new DataHolder<>(new Passenger("", "", 0),"Passengers.dat",180, 3);
-    Flights flights = new Flights(new Flight("", "", "", "", "", 0,0, false), "Flights.dat",480, 8);
-    Tickets tickets = new Tickets(new Ticket("", "", ""), "Tickets.dat",180, 3);
+    DataHolder<Admin> admins = new DataHolder<>(new Admin("",""),"Admins.dat", "AdminsIndex.dat", 120, 2);
+    DataHolder<Passenger> passengers = new DataHolder<>(new Passenger("", "", 0),"Passengers.dat", "PassengersIndex.dat",180, 3);
+    Flights flights = new Flights(new Flight("", "", "", "", "", 0,0, false), "Flights.dat", "FlightsIndex.dat",480, 8);
+    Tickets tickets = new Tickets(new Ticket("", "", ""), "Tickets.dat", "TicketsIndex.dat",180, 3);
 
     private final Account account = new Account(input, admins, passengers);
     private final AdminActions adminActions = new AdminActions(input, flights);

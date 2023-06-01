@@ -21,6 +21,11 @@ public class Passenger extends BaseUser {
     }
 
     @Override
+    public String keyWord() {
+        return getUsername();
+    }
+
+    @Override
     public Passenger separateRecord(String[] str) {
         return new Passenger(str[0], str[1], stringToInt(str[2]));
     }

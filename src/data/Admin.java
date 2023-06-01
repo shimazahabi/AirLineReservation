@@ -15,6 +15,11 @@ public class Admin extends BaseUser {
     }
 
     @Override
+    public String keyWord() {
+        return getUsername();
+    }
+
+    @Override
     public Admin separateRecord(String[] str) {
         return new Admin(str[0], str[1]);
     }

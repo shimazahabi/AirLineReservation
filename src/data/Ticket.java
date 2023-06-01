@@ -26,6 +26,11 @@ public class Ticket implements WritableReadable<Ticket> {
     }
 
     @Override
+    public String keyWord() {
+        return ticketId;
+    }
+
+    @Override
     public Ticket separateRecord(String[] str) {
         return new Ticket(str[0], str[1], str[2]);
     }

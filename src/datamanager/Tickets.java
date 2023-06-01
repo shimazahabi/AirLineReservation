@@ -11,9 +11,10 @@ import java.util.ArrayList;
 public class Tickets extends DataHolder<Ticket> {
     public static int idCounter = 1000;
 
-    public Tickets(Ticket ticket, String filePath, int recordBytesNum, int featuresNum) {
-        super(ticket, filePath, recordBytesNum, featuresNum);
+    public Tickets(Ticket ticket, String filePath, String fileIndexPath, int recordBytesNum, int featuresNum) {
+        super(ticket, filePath, fileIndexPath, recordBytesNum, featuresNum);
     }
+
 
     /**
      * This method generates a unique ticket id.
@@ -37,7 +38,7 @@ public class Tickets extends DataHolder<Ticket> {
             for (int i = 0; i < (file.length() / recordBytesNum); i++) {
                 String[] str = new String[featuresNum];
                 for (int j = 0; j < featuresNum; j++) {
-                    str[j] = readFixString();
+                    str[j] = readFixString(file);
                 }
                 if (username.matches(str[1])) {
                     foundTickets.add(t.separateRecord(str));

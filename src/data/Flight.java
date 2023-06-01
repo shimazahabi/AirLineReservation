@@ -60,6 +60,11 @@ public class Flight implements WritableReadable<Flight> {
     }
 
     @Override
+    public String keyWord() {
+        return flightId;
+    }
+
+    @Override
     public Flight separateRecord(String[] str) {
         return new Flight(str[0], str[1], str[2], str[3], str[4], stringToInt(str[5]), stringToInt(str[6]), stringToBoolean(str[7]));
     }

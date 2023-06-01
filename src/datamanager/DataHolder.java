@@ -1,8 +1,7 @@
 package datamanager;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * This is a generic class that includes all the methods that are needed to work with RandomAccessFile.
@@ -11,28 +10,36 @@ import java.util.List;
 public class DataHolder<T extends WritableReadable> {
     protected T t;
     protected String filePath;
+    protected String fileIndexPath;
     protected RandomAccessFile file;
+    protected RandomAccessFile fileIndex;
     protected int recordBytesNum;
     protected int featuresNum;
+    protected HashMap<String, Long> index;
 
-    public DataHolder(T t, String filePath, int recordBytesNum, int featuresNum) {
+    public DataHolder(T t, String filePath, String fileIndexPath, int recordBytesNum, int featuresNum) {
         this.t = t;
         this.filePath = filePath;
+        this.fileIndexPath = fileIndexPath;
         this.recordBytesNum = recordBytesNum;
         this.featuresNum = featuresNum;
+        this.index = new HashMap<>();
         try {
             file = new RandomAccessFile(filePath, "rw");
+            fileIndex = new RandomAccessFile(fileIndexPath, "rw");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        check();
+        check(filePath);
+        check(fileIndexPath);
+        fileIndexToHashMap();
     }
 
     /**
      * This method checks weather the file exists or not.
      */
-    public void check() {
-        File file1 = new File(filePath);
+    public void check(String path) {
+        File file1 = new File(path);
         if (!file1.exists()) {
             try {
                 file1.createNewFile();
@@ -58,14 +65,40 @@ public class DataHolder<T extends WritableReadable> {
     }
 
     /**
+     * This method loads the indexFile in a HashMap.
+     */
+    public void fileIndexToHashMap() {
+        try {
+            fileIndex = new RandomAccessFile(fileIndexPath, "rw");
+            for (int i = 0; i < (fileIndex.length() / t.INDEX_SIZE); i++) {
+                index.put(readFixString(fileIndex), fileIndex.readLong());
+            }
+            fileIndex.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * This method adds data to the file.
      */
     public void addToFile(T t) {
         try {
             openFile();
-            file.seek(file.length());
+            fileIndex = new RandomAccessFile(fileIndexPath, "rw");
+
+            long pointer = file.length();
+            file.seek(pointer);
             file.writeChars(t.generate());
+
+            fileIndex.seek(fileIndex.length());
+            fileIndex.writeChars(t.fixString(t.keyWord()));
+            fileIndex.writeLong(pointer);
+
+            index.put(t.keyWord(), pointer);
+
             closeFile();
+            fileIndex.close();
         } catch (IOException e) {
             System.err.println("File couldn't add the data !");
             throw new RuntimeException(e);
@@ -79,20 +112,17 @@ public class DataHolder<T extends WritableReadable> {
      */
     public T findInFile(String keyWord) {
         try {
-            openFile();
-            String[] str = new String[featuresNum];
-            for (int i = 0; i < (file.length() / recordBytesNum); i++) {
-                str[0] = readFixString();
-                if (keyWord.equals(str[0])) {
-                    for (int j = 1; j < featuresNum; j++) {
-                        str[j] = readFixString();
-                    }
-                    return (T) t.separateRecord(str);
-                } else {
-                    file.skipBytes(recordBytesNum - (t.STRING_FIXED_SIZE  * 2));
+            if (index.containsKey(keyWord)) {
+                openFile();
+                file.seek(index.get(keyWord));
+
+                String[] str = new String[featuresNum];
+                for (int i = 0; i < featuresNum; i++) {
+                    str[i] = readFixString(file);
                 }
+                closeFile();
+                return (T) t.separateRecord(str);
             }
-            closeFile();
         } catch (IOException e) {
             System.err.println("File couldn't find the data !");
         }
@@ -108,15 +138,10 @@ public class DataHolder<T extends WritableReadable> {
     public void updateFile(String keyWord, int fieldNum, String replacement) {
         try {
             openFile();
-            for (int i = 0; i < (file.length() / recordBytesNum); i++) {
-                String str = readFixString();
-                if (keyWord.equals(str)) {
-                    file.skipBytes((fieldNum - 2) * (t.STRING_FIXED_SIZE * 2));
-                    file.writeChars(t.fixString(replacement));
-                    break;
-                } else {
-                    file.skipBytes(recordBytesNum - (t.STRING_FIXED_SIZE  * 2));
-                }
+            if (index.containsKey(keyWord)) {
+                file.seek(index.get(keyWord));
+                file.skipBytes((fieldNum - 1) * (t.STRING_FIXED_SIZE * 2));
+                file.writeChars(t.fixString(replacement));
             }
             closeFile();
         } catch (IOException e) {
@@ -132,19 +157,11 @@ public class DataHolder<T extends WritableReadable> {
     public void removeFromFile(String keyWord) {
         try {
             openFile();
-            for (int i = 0; i < (file.length() / recordBytesNum); i++) {
-                String str = readFixString();
-                if (keyWord.equals(str)) {
-                    long pointer = file.getFilePointer() - (t.STRING_FIXED_SIZE  * 2);
-
-                    file.seek(file.length() - recordBytesNum);
-                    str = readFixString();
-                    str = wholeRecord(str);
-                    file.seek(pointer);
-                    file.writeChars(str);
-                } else {
-                    file.skipBytes(recordBytesNum - (t.STRING_FIXED_SIZE  * 2));
-                }
+            if (index.containsKey(keyWord)) {
+                file.seek(file.length() - recordBytesNum);
+                String str = wholeRecord();
+                file.seek(index.get(keyWord));
+                file.writeChars(str);
             }
 
             long newLength = file.length() - recordBytesNum;
@@ -159,7 +176,7 @@ public class DataHolder<T extends WritableReadable> {
      * This method reads a fix string from the file.
      * @return the trimmed string
      */
-    public String readFixString() {
+    public String readFixString(RandomAccessFile file) {
         String tmp = "";
         try {
             for (int i = 0; i < t.STRING_FIXED_SIZE; i++) {
@@ -173,13 +190,12 @@ public class DataHolder<T extends WritableReadable> {
 
     /**
      * This method makes the whole record in one string.
-     * @param str the first field
      * @return the whole record
      */
-    public String wholeRecord(String str) {
-        String tmp = t.fixString(str);
+    public String wholeRecord() {
+        String tmp = "";
         try {
-            for (int i = 0; i < (recordBytesNum / 2) - t.STRING_FIXED_SIZE; i++) {
+            for (int i = 0; i < (recordBytesNum / 2); i++) {
                 tmp += file.readChar();
             }
         } catch (IOException e) {
