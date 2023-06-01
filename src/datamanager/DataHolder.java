@@ -132,20 +132,19 @@ public class DataHolder<T extends WritableReadable> {
     public void removeFromFile(String keyWord) {
         try {
             openFile();
-            List<String> records = new ArrayList<>();
             for (int i = 0; i < (file.length() / recordBytesNum); i++) {
                 String str = readFixString();
-                if (!keyWord.equals(str)) {
+                if (keyWord.equals(str)) {
+                    long pointer = file.getFilePointer() - (t.STRING_FIXED_SIZE  * 2);
+
+                    file.seek(file.length() - recordBytesNum);
+                    str = readFixString();
                     str = wholeRecord(str);
-                    records.add(str);
+                    file.seek(pointer);
+                    file.writeChars(str);
                 } else {
                     file.skipBytes(recordBytesNum - (t.STRING_FIXED_SIZE  * 2));
                 }
-            }
-
-            file.seek(0);
-            for (int i = 0; i < records.size(); i++) {
-                file.writeChars(records.get(i));
             }
 
             long newLength = file.length() - recordBytesNum;

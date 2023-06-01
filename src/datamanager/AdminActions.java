@@ -211,28 +211,33 @@ public class AdminActions {
     public void removingFlight() {
         String flightId = searchFlightId();
 
-        Console.pauseProgram();
-        System.out.print(AnsiColors.ANSI_PURPLE + """
+        if (flights.findInFile(flightId).isBooked()) {
+            System.out.println(AnsiColors.ANSI_RED + "You can't remove the flight, because the flight is booked by passengers !" + AnsiColors.ANSI_RESET);
+        } else {
+            Console.pauseProgram();
+            System.out.print(AnsiColors.ANSI_PURPLE + """
                 Are you sure that you wanna remove the flight?
                 - Enter 'y' for yes.
                 - Enter 'n' for no.
                 """ + AnsiColors.ANSI_RESET);
 
-        do {
-            String answer = input.nextLine();
-            Console.pauseProgram();
+            do {
+                String answer = input.nextLine();
+                Console.pauseProgram();
 
-            if (answer.equals("y")) {
-                flights.removeFromFile(flightId);
-                System.out.println(AnsiColors.ANSI_GREEN + ">> Flight is successfully removed ! <<\n" + AnsiColors.ANSI_RESET);
-                break;
-            } else if (answer.equals("n")) {
-                System.out.println(AnsiColors.ANSI_GREEN + ">> Flight isn't removed ! <<\n" + AnsiColors.ANSI_RESET);
-                break;
-            } else {
-                System.out.println(AnsiColors.ANSI_RED + "Invalid Input ! Try Again : " + AnsiColors.ANSI_RESET);
-            }
-        } while (true);
+                if (answer.equals("y")) {
+                    flights.removeFromFile(flightId);
+                    System.out.println(AnsiColors.ANSI_GREEN + ">> Flight is successfully removed ! <<\n" + AnsiColors.ANSI_RESET);
+                    break;
+                } else if (answer.equals("n")) {
+                    System.out.println(AnsiColors.ANSI_GREEN + ">> Flight isn't removed ! <<\n" + AnsiColors.ANSI_RESET);
+                    break;
+                } else {
+                    System.out.println(AnsiColors.ANSI_RED + "Invalid Input ! Try Again : " + AnsiColors.ANSI_RESET);
+                }
+            } while (true);
+        }
+
         Console.pressKey();
     }
 
