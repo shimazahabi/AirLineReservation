@@ -15,14 +15,13 @@ public class Tickets extends DataHolder<Ticket> {
         super(ticket, filePath, fileIndexPath, recordBytesNum, featuresNum);
     }
 
-
     /**
      * This method generates a unique ticket id.
      * @param flightId of the booked flight
      * @return generated ticket id
      */
     public String ticketIdGenerator(String flightId) {
-        idCounter++;
+        idCounter += index.size() + 1;
         return String.format("%s-%d", flightId, idCounter);
     }
 
